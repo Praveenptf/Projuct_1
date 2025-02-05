@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  void _filterParlours(String query) {
+  void _filterParlours([String query = '']) {
     if (query.isEmpty) {
       // If the search query is empty, reset to the original list
       _nearbyParlours = widget.initialNearbyParlours;

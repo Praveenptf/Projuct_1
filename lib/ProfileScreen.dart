@@ -18,11 +18,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final ImagePicker _picker = ImagePicker();
   XFile? _profileImage; // Holds the selected profile image
 
-  // Controllers to handle text input
-  // final TextEditingController _nameController =
-  //     TextEditingController(text: ''); // Default name
-// Default email
-
   Future<void> _pickImage() async {
     // Show options for picking image
     final XFile? image = await _picker.pickImage(
@@ -158,7 +153,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => NotificationsPage()),
+                            builder: (context) => NotificationPage(
+                                  title: '',
+                                  message: '',
+                                  date: '',
+                                  time: '',
+                                )),
                       );
                     },
                   ),
@@ -219,61 +219,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
-
-  // void _editUserInfo(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Text(
-  //           'Edit Information',
-  //           style:
-  //               GoogleFonts.adamina(fontSize: 18, fontWeight: FontWeight.bold),
-  //         ),
-  //         content: SingleChildScrollView(
-  //           child: Column(
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               TextField(
-  //                 controller: _nameController,
-  //                 decoration: InputDecoration(
-  //                   labelText: 'Name',
-  //                   labelStyle: TextStyle(fontSize: 14),
-  //                   border: OutlineInputBorder(
-  //                     borderRadius: BorderRadius.circular(10.0),
-  //                   ),
-  //                   contentPadding:
-  //                       EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.of(context).pop(); // Close the dialog
-  //             },
-  //             child: Text(
-  //               'Cancel',
-  //               style: TextStyle(color: Colors.black),
-  //             ),
-  //           ),
-  //           ElevatedButton(
-  //             onPressed: () {
-  //               setState(() {
-  //                 // Update the UI with new values
-  //               });
-  //               Navigator.of(context).pop(); // Close the dialog
-  //             },
-  //             child: Text('Save', style: TextStyle(color: Colors.white)),
-  //             style: ElevatedButton.styleFrom(
-  //               backgroundColor: Colors.black,
-  //             ),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 }

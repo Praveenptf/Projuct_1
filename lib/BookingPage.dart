@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:firrst_projuct/BookingConfirmationPage.dart';
 import 'package:firrst_projuct/CartModel.dart';
 import 'package:firrst_projuct/CartPage.dart';
+import 'package:firrst_projuct/NotificationsPage.dart';
 import 'package:firrst_projuct/ServicePage.dart';
 import 'package:firrst_projuct/TokenManager.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +98,7 @@ class _BookingPageState extends State<BookingPage> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.38:8080/Items/itemByParlourId/$shopId'), // Update the URL as needed
+            'http://192.168.1.49:8080/Items/itemByParlourId/$shopId'), // Update the URL as needed
         headers: {
           'Content-Type': 'application/json',
           'Cookie':
@@ -112,11 +113,11 @@ class _BookingPageState extends State<BookingPage> {
           services = jsonResponse.map((service) {
             return {
               'itemName': service['itemName'],
-              'price': service['price'].toString(),
+              'price': service['price'],
               'description': service['description'],
               'availability': service['availability'],
               'serviceTime': service['serviceTime'],
-              'itemImage': service['ItemImage'], // Adjust the key if necessary
+              'itemImage': service['itemImage'], // Adjust the key if necessary
             };
           }).toList();
         });
@@ -142,7 +143,7 @@ class _BookingPageState extends State<BookingPage> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.38:8080/employees/by-parlourId?parlourId=$shopId'),
+            'http://192.168.1.49:8080/employees/by-parlourId?parlourId=$shopId'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie':
@@ -550,8 +551,9 @@ class _BookingPageState extends State<BookingPage> {
         final service = limitedServices[index];
         Uint8List? imageBytes;
 
-        if (service['image'] != null) {
-          imageBytes = base64Decode(service['image']);
+        // Check if the image is not null and decode it
+        if (service['itemImage'] != null) {
+          imageBytes = base64Decode(service['itemImage']);
         }
 
         return Container(
@@ -586,7 +588,8 @@ class _BookingPageState extends State<BookingPage> {
                     ),
               Flexible(
                 child: Text(
-                  service['itemName'],
+                  service['itemName'] ??
+                      'Unknown Item', // Provide a default value
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,
@@ -598,13 +601,14 @@ class _BookingPageState extends State<BookingPage> {
               ),
               SizedBox(height: 4.0),
               Text(
-                '\$${service['price']}',
+                '\$${service['price'] ?? 'N/A'}', // Provide a default value
                 style: TextStyle(color: Colors.black, fontSize: 14.0),
               ),
               SizedBox(height: 4.0),
               Flexible(
                 child: Text(
-                  service['description'],
+                  service['description'] ??
+                      'No description available', // Provide a default value
                   style: TextStyle(color: Colors.black, fontSize: 12.0),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -612,12 +616,12 @@ class _BookingPageState extends State<BookingPage> {
               ),
               SizedBox(height: 4.0),
               Text(
-                'Available: ${service['availability'] ? 'Yes' : 'No'}',
+                'Available: ${service['availability'] == true ? 'Yes' : 'No'}', // Ensure availability is checked correctly
                 style: TextStyle(color: Colors.black, fontSize: 12.0),
               ),
               SizedBox(height: 4.0),
               Text(
-                'Service Time: ${service['serviceTime']}',
+                'Service Time: ${service['serviceTime'] ?? 'N/A'}', // Provide a default value
                 style: TextStyle(color: Colors.black, fontSize: 12.0),
               ),
               SizedBox(height: 8.0),
@@ -663,6 +667,8 @@ class _BookingPageState extends State<BookingPage> {
           imageBytes = base64Decode(employee['image']);
         }
 
+        bool isSelected = selectedEmployeeId == employee['id'].toString();
+
         return GestureDetector(
           onTap: () {
             setState(() {
@@ -672,7 +678,9 @@ class _BookingPageState extends State<BookingPage> {
           },
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isSelected
+                  ? Colors.blue[100]
+                  : Colors.white, // Change color if selected
               borderRadius: BorderRadius.circular(8.0),
               boxShadow: [
                 BoxShadow(
@@ -713,6 +721,8 @@ class _BookingPageState extends State<BookingPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                if (isSelected) // Show a checkmark or any indicator if selected
+                  Icon(Icons.check_circle, color: Colors.green),
               ],
             ),
           ),

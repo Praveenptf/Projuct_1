@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:firrst_projuct/ForgotPasswordPage.dart';
 import 'package:firrst_projuct/HomePage.dart';
 import 'package:firrst_projuct/RegisterPage.dart';
@@ -23,6 +22,9 @@ class _LoginPageState extends State<LoginPage>
   late Animation<Offset> _slideAnimation;
   bool _isPasswordVisible = false;
   final _formKey = GlobalKey<FormState>();
+
+  String? _mobileErrorMessage;
+  String? _passwordErrorMessage;
 
   @override
   void initState() {
@@ -59,11 +61,30 @@ class _LoginPageState extends State<LoginPage>
     super.dispose();
   }
 
+  void _validateFields() {
+    setState(() {
+      _mobileErrorMessage = null;
+      _passwordErrorMessage = null;
+
+      if (_mobileNumber.text.isEmpty) {
+        _mobileErrorMessage = 'Please enter your mobile number';
+      }
+
+      if (_passwordController.text.isEmpty) {
+        _passwordErrorMessage = 'Please enter your password';
+      } else if (_passwordController.text.length < 6) {
+        _passwordErrorMessage = 'Password must be at least 6 characters long';
+      }
+    });
+  }
+
   Future<void> _handleLogin() async {
-    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+    _validateFields();
+
+    if (_mobileErrorMessage == null && _passwordErrorMessage == null) {
       // Proceed with login logic
       final response = await http.post(
-        Uri.parse('http://192.168.1.38:8080/user/UserLogin'),
+        Uri.parse('http://192.168.1.49:8080/user/UserLogin'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -91,8 +112,8 @@ class _LoginPageState extends State<LoginPage>
           MaterialPageRoute(builder: (context) => HomePage()),
         );
       } else {
-        // ' If the server did not return an OK response, show an error message';
-        // setState(() {});
+        // Handle error response
+        // You can show a Snackbar or a dialog here
       }
     }
   }
@@ -179,7 +200,7 @@ class _LoginPageState extends State<LoginPage>
                           child: TextField(
                             controller: _mobileNumber,
                             decoration: InputDecoration(
-                              hintText: 'Moblie Number',
+                              hintText: 'Mobile Number',
                               prefixIcon: Icon(
                                 Icons.phone,
                                 color: Colors.deepPurple.shade300,
@@ -194,6 +215,17 @@ class _LoginPageState extends State<LoginPage>
                             keyboardType: TextInputType.phone,
                           ),
                         ),
+                        if (_mobileErrorMessage != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              _mobileErrorMessage!,
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
                         const SizedBox(height: 16),
                         Container(
                           decoration: BoxDecoration(
@@ -238,6 +270,17 @@ class _LoginPageState extends State<LoginPage>
                             ),
                           ),
                         ),
+                        if (_passwordErrorMessage != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              _passwordErrorMessage!,
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
                         const SizedBox(height: 12),
                         Align(
                           alignment: Alignment.centerRight,
@@ -300,7 +343,7 @@ class _LoginPageState extends State<LoginPage>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Don\'thave an account? ',
+                              'Don\'t have an account? ',
                               style: TextStyle(
                                 color: Colors.grey.shade600,
                               ),
