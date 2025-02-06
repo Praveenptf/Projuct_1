@@ -11,8 +11,8 @@ class BookingConfirmationPage extends StatelessWidget {
   final String orderId; // New field for order ID
   final String paymentId; // New field for payment ID
   final int? itemId; // Made nullable
-  final int? parlourId; // Made nullable
-  final int? employeeId; // Made nullable
+  final int? shopId; // Made nullable
+  final String? selectedEmployeeId;
   final int? quantity; // Made nullable
   final String uniqueId; // New field for unique ID
   final String status; // New field for status
@@ -28,8 +28,8 @@ class BookingConfirmationPage extends StatelessWidget {
     required this.orderId,
     required this.paymentId,
     this.itemId, // Now nullable
-    this.parlourId, // Now nullable
-    this.employeeId, // Now nullable
+    this.shopId, // Now nullable
+    this.selectedEmployeeId,
     this.quantity, // Now nullable
     required this.uniqueId,
     this.status = "Pending", // Default status
@@ -162,9 +162,9 @@ class BookingConfirmationPage extends StatelessWidget {
                   _buildBookingDetailRow(
                       'Item ID:', itemId?.toString() ?? 'N/A'),
                   _buildBookingDetailRow(
-                      'Parlour ID:', parlourId?.toString() ?? 'N/A'),
+                      'Parlour ID:', shopId?.toString() ?? 'N/A'),
                   _buildBookingDetailRow(
-                      'Employee ID:', employeeId?.toString() ?? 'N/A'),
+                      'Employee ID:', selectedEmployeeId?.toString() ?? 'N/A'),
                   _buildBookingDetailRow(
                       'Total Quantity:',
                       _calculateTotalQuantity()

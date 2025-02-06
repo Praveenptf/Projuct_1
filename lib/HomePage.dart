@@ -352,14 +352,10 @@ class _HomePageState extends State<HomePage>
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(16),
                                   onTap: () {
-                                    String imageUrl = parlour['image'] ??
-                                        ''; // Get the image URL
-
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => BookingPage(
-                                          parlourDetails: parlour,
                                           title: parlour['parlourName'] ?? '',
                                           shopName:
                                               parlour['parlourName'] ?? '',
@@ -371,8 +367,10 @@ class _HomePageState extends State<HomePage>
                                           description: parlour['description'] ??
                                               'No Description Available',
                                           id: parlour['id'] ?? 'No id',
-                                          imageUrl:
-                                              imageUrl, // Pass the image URL
+                                          imageUrl: parlour['image'] ??
+                                              '', // Pass the image URL or base64 string
+                                          parlourDetails:
+                                              parlour, // Decode base64 if necessary
                                         ),
                                       ),
                                     );

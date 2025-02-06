@@ -1,253 +1,319 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
 
-class EditProfileScreen extends StatelessWidget {
-  const EditProfileScreen({super.key});
+class UserProfile extends StatefulWidget {
+  @override
+  _UserProfileState createState() => _UserProfileState();
+}
+
+class _UserProfileState extends State<UserProfile> {
+  Future<User>? userFuture;
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  bool _isEditing = false;
+  bool _isInitialized = false;
+
+  Future<int> getUserId() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('UserId') ?? 0;
+  }
+
+  Future<String> getAuthToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('authToken') ?? '';
+  }
+
+  Future<User> fetchUserDetails(int userId) async {
+    final response = await http.get(
+      Uri.parse('http://192.168.1.49:8080/api/parlour/id?id=$userId'),
+      headers: {
+        'Cookie': 'JSESSIONID=ACF91BC7C0410372B5E2DF5E978E186B',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      if (data is Map<String, dynamic>) {
+        return User.fromJson(data);
+      } else if (data is List && data.isNotEmpty) {
+        return User.fromJson(data[0]);
+      } else {
+        throw Exception('Unexpected data format');
+      }
+    } else {
+      throw Exception('Failed to load parlour details');
+    }
+  }
+
+  Future<void> saveChanges(int userId) async {
+    final token = await getAuthToken();
+    final response = await http.post(
+      Uri.parse('http://192.168.1.49:8080/api/parlour/update'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'Cookie': 'JSESSIONID=ACF91BC7C0410372B5E2DF5E978E186B',
+      },
+      body: json.encode({
+        'id': userId,
+        'parlourName': _nameController.text,
+        'phoneNumber': _phoneController.text,
+        'email': _emailController.text,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Changes saved successfully')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save changes: ${response.body}')),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    userFuture = getUserId().then((userId) => fetchUserDetails(userId));
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void _initializeControllers(User userData) {
+    if (!_isInitialized) {
+      _nameController.text = userData.parlourName;
+      _phoneController.text = userData.phoneNumber;
+      _emailController.text = userData.email;
+      _isInitialized = true;
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      // Handle the selected image (e.g., upload it or display it)
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        centerTitle: false,
-        elevation: 0,
         backgroundColor: Colors.white,
-        foregroundColor: Colors.deepPurple.shade800,
-        title: const Text("Edit Profile"),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            ProfilePic(
-              image:
-                  'https://i0.wp.com/therighthairstyles.com/wp-content/uploads/2021/09/2-mens-undercut.jpg?resize=500%2C503',
-              imageUploadBtnPress: () {},
-            ),
-            const Divider(),
-            Form(
-              child: Column(
-                children: [
-                  UserInfoEditField(
-                    text: "Name",
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Enter your name',
-                        filled: true,
-                        fillColor: Colors.deepPurple.shade800.withOpacity(0.05),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0 * 1.5, vertical: 16.0),
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(50)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  UserInfoEditField(
-                    text: "Email",
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Enter your email',
-                        filled: true,
-                        fillColor: Colors.deepPurple.shade800.withOpacity(0.05),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0 * 1.5, vertical: 16.0),
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(50)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  UserInfoEditField(
-                    text: "Phone",
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Enter your phone number',
-                        filled: true,
-                        fillColor: Colors.deepPurple.shade800.withOpacity(0.05),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0 * 1.5, vertical: 16.0),
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(50)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  UserInfoEditField(
-                    text: "Address",
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Enter your address',
-                        filled: true,
-                        fillColor: Colors.deepPurple.shade800.withOpacity(0.05),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0 * 1.5, vertical: 16.0),
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(50)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // UserInfoEditField(
-                  //   text: "Old Password",
-                  //   child: TextFormField(
-                  //     obscureText: true,
-                  //     initialValue: "demopass",
-                  //     decoration: InputDecoration(
-                  //       suffixIcon: const Icon(
-                  //         Icons.visibility_off,
-                  //         size: 20,
-                  //       ),
-                  //       filled: true,
-                  //       fillColor:  Colors.deepPurple.shade800.withOpacity(0.05),
-                  //       contentPadding: const EdgeInsets.symmetric(
-                  //           horizontal: 16.0 * 1.5, vertical: 16.0),
-                  //       border: const OutlineInputBorder(
-                  //         borderSide: BorderSide.none,
-                  //         borderRadius: BorderRadius.all(Radius.circular(50)),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // UserInfoEditField(
-                  //   text: "New Password",
-                  //   child: TextFormField(
-                  //     decoration: InputDecoration(
-                  //       hintText: "New Password",
-                  //       filled: true,
-                  //       fillColor: Colors.deepPurple.shade800.withOpacity(0.05),
-                  //       contentPadding: const EdgeInsets.symmetric(
-                  //           horizontal: 16.0 * 1.5, vertical: 16.0),
-                  //       border: const OutlineInputBorder(
-                  //         borderSide: BorderSide.none,
-                  //         borderRadius: BorderRadius.all(Radius.circular(50)),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(
-                  width: 120,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      // backgroundColor: Colors.deepPurple.shade800.withOpacity(0.08),
-                      // foregroundColor: Colors.deepPurple.shade800,
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: const StadiumBorder(),
-                    ),
-                    child: const Text("Cancel"),
-                  ),
-                ),
-                const SizedBox(width: 16.0),
-                SizedBox(
-                  width: 160,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple.shade800,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: const StadiumBorder(),
-                    ),
-                    onPressed: () {},
-                    child: const Text("Save Update"),
-                  ),
-                ),
-              ],
-            ),
-          ],
+        title: Text(
+          "User Details",
+          style: TextStyle(color: Colors.deepPurple.shade800),
         ),
+        iconTheme: IconThemeData(color: Colors.deepPurple.shade800),
+        actions: [
+          IconButton(
+            icon: Icon(_isEditing ? Icons.check : Icons.edit),
+            onPressed: () async {
+              setState(() {
+                if (_isEditing) {
+                  if (_formKey.currentState!.validate()) {
+                    getUserId().then((userId) {
+                      saveChanges(userId);
+                    });
+                  }
+                }
+                _isEditing = !_isEditing;
+              });
+            },
+          ),
+        ],
+      ),
+      body: FutureBuilder<User>(
+        future: userFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            final userData = snapshot.data!;
+            _initializeControllers(userData);
+
+            Uint8List? decodedImage;
+            if (userData.image.isNotEmpty) {
+              try {
+                decodedImage = base64Decode(userData.image);
+              } catch (e) {
+                print('Error decoding image: $e');
+              }
+            }
+
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Theme.of(context).primaryColor,
+                                width: 2,
+                              ),
+                            ),
+                            child: ClipOval(
+                              child: decodedImage != null
+                                  ? Image.memory(
+                                      decodedImage,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Icon(Icons.store, size: 60),
+                            ),
+                          ),
+                          if (_isEditing)
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: CircleAvatar(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                radius: 18,
+                                child: IconButton(
+                                  icon: Icon(Icons.camera_alt,
+                                      size: 18, color: Colors.white),
+                                  onPressed: _pickImage,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      SizedBox(height: 24),
+                      TextFormField(
+                        controller: _nameController,
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          labelText: 'User Name',
+                          labelStyle: TextStyle(color: Colors.black),
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.store, color: Colors.black),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                        enabled: _isEditing,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter User name';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        controller: _phoneController,
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          labelText: 'Phone Number',
+                          labelStyle: TextStyle(color: Colors.black),
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.phone, color: Colors.black),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                        enabled: _isEditing,
+                        keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter phone number';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        controller: _emailController,
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(color: Colors.black),
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.email, color: Colors.black),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                        enabled: _isEditing,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter email';
+                          }
+                          if (!value.contains('@')) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          } else {
+            return Center(child: Text('No data found.'));
+          }
+        },
       ),
     );
   }
 }
 
-class ProfilePic extends StatelessWidget {
-  const ProfilePic({
-    super.key,
-    required this.image,
-    this.isShowPhotoUpload = false,
-    this.imageUploadBtnPress,
-  });
-
+class User {
+  final String parlourName;
+  final String phoneNumber;
+  final String email;
   final String image;
-  final bool isShowPhotoUpload;
-  final VoidCallback? imageUploadBtnPress;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      margin: const EdgeInsets.symmetric(vertical: 16.0),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: Colors.deepPurple.shade800.withOpacity(0.08),
-        ),
-      ),
-      child: Stack(
-        alignment: Alignment.bottomRight,
-        children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundImage: NetworkImage(image),
-          ),
-          InkWell(
-            onTap: imageUploadBtnPress,
-            child: CircleAvatar(
-              radius: 13,
-              backgroundColor: Colors.deepPurple.shade800,
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 20,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class UserInfoEditField extends StatelessWidget {
-  const UserInfoEditField({
-    super.key,
-    required this.text,
-    required this.child,
+  User({
+    required this.parlourName,
+    required this.phoneNumber,
+    required this.email,
+    required this.image,
   });
 
-  final String text;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0 / 2),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Text(
-              text,
-              style: TextStyle(color: Colors.deepPurple.shade800),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: child,
-          ),
-        ],
-      ),
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      parlourName: json['parlourName'],
+      phoneNumber: json['phoneNumber'],
+      email: json['email'],
+      image: json['image'],
     );
   }
 }

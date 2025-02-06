@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:firrst_projuct/BookingConfirmationPage.dart';
 import 'package:firrst_projuct/CartModel.dart';
 import 'package:firrst_projuct/CartPage.dart';
-import 'package:firrst_projuct/NotificationsPage.dart';
 import 'package:firrst_projuct/ServicePage.dart';
 import 'package:firrst_projuct/TokenManager.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +97,7 @@ class _BookingPageState extends State<BookingPage> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.49:8080/Items/itemByParlourId/$shopId'), // Update the URL as needed
+            'http://192.168.1.150:8080/api/Items/itemByParlourId?parlourId=$shopId'), // Update the URL as needed
         headers: {
           'Content-Type': 'application/json',
           'Cookie':
@@ -140,14 +139,14 @@ class _BookingPageState extends State<BookingPage> {
   List<Map<String, dynamic>> employees = [];
 
   Future<void> _fetchEmployees() async {
+    String? token = await TokenManager.getToken();
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.49:8080/employees/by-parlourId?parlourId=$shopId'),
+            'http://192.168.1.150:8080/api/employees/by-parlourId?parlourId=$shopId'),
         headers: {
           'Content-Type': 'application/json',
-          'Cookie':
-              'JSESSIONID=0E23F49EA082E79A9A211C75DC99D6E2', // Use your actual session ID
+          'Authorization': 'Bearer $token',
         },
       );
 
@@ -159,7 +158,7 @@ class _BookingPageState extends State<BookingPage> {
               'id': employee['id'],
               'employeeName': employee['employeeName'],
               'isAvailable':
-                  employee['isAvailable'] ?? false, // Default to false if null
+                  employee['isAvailable'] ?? true, // Default to false if null
               'image': employee['image'], // Assuming you have an image URL
             };
           }).toList();
@@ -187,8 +186,8 @@ class _BookingPageState extends State<BookingPage> {
 
     List<Map<String, dynamic>> bookingData = [
       {
-        "userId": 5, // Use the retrieved user ID here
-        "itemId": 5, // Replace with the actual item ID
+        "userId": 1, // Use the retrieved user ID here
+        "itemId": 1, // Replace with the actual item ID
         "itemName": selectedServiceTitles.join(', '),
         "actualPrice": _calculateTotalAmount(),
         "parlourId": shopId,
@@ -203,7 +202,7 @@ class _BookingPageState extends State<BookingPage> {
     ];
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.38:8080/api/cart/add'),
+      Uri.parse('http://192.168.1.150:8080/api/cart/add'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -230,6 +229,8 @@ class _BookingPageState extends State<BookingPage> {
             orderId: '',
             paymentId: '',
             uniqueId: '',
+            shopId: shopId,
+            selectedEmployeeId: selectedEmployeeId, // Pass selected employee ID
           ),
         ),
       );
@@ -267,8 +268,7 @@ class _BookingPageState extends State<BookingPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            CartPage(cartItems: cart.cartItems),
+                        builder: (context) => CartPage(),
                       ),
                     );
                   },
@@ -312,8 +312,8 @@ class _BookingPageState extends State<BookingPage> {
                   ? Image.asset(
                       'assets/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg',
                     )
-                  : Image.network(
-                      widget.imageUrl,
+                  : Image.memory(
+                      Uint8List.fromList(base64Decode(widget.imageUrl)),
                       errorBuilder: (context, error, stackTrace) {
                         print('Error loading image: $error'); // Debugging
                         return Image.asset(
@@ -382,7 +382,10 @@ class _BookingPageState extends State<BookingPage> {
             SizedBox(height: 20),
             Divider(),
             _buildSectionTitle('Available Employees'), // New section title
-            _buildEmployeeList(), // Display employee list
+            _buildEmployeeList(),
+            SizedBox(
+              height: 10,
+            ), // Display employee list
             _buildSectionTitle('Booking Time'),
             Column(
               children: [
@@ -649,85 +652,89 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Widget _buildEmployeeList() {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 8.0,
-        childAspectRatio: 0.8,
-      ),
-      itemCount: employees.length,
-      itemBuilder: (context, index) {
-        final employee = employees[index];
-        Uint8List? imageBytes;
+    return Container(
+      height: 200, // Set a fixed height for the horizontal list
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: employees.length,
+        itemBuilder: (context, index) {
+          final employee = employees[index];
+          Uint8List? imageBytes;
 
-        if (employee['image'] != null) {
-          imageBytes = base64Decode(employee['image']);
-        }
+          if (employee['image'] != null) {
+            imageBytes = base64Decode(employee['image']);
+          }
 
-        bool isSelected = selectedEmployeeId == employee['id'].toString();
+          bool isSelected = selectedEmployeeId == employee['id'].toString();
 
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              selectedEmployeeId = employee['id'].toString();
-              selectedEmployeeName = employee['employeeName'];
-            });
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? Colors.blue[100]
-                  : Colors.white, // Change color if selected
-              borderRadius: BorderRadius.circular(8.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                imageBytes != null
-                    ? Image.memory(
-                        imageBytes,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      )
-                    : Container(
-                        height: 100,
-                        color: Colors.grey[500],
-                        child: Center(
-                          child:
-                              Icon(Icons.image, color: Colors.white, size: 50),
-                        ),
-                      ),
-                SizedBox(height: 8.0),
-                Text('ID: ${employee['id']}',
-                    style: TextStyle(color: Colors.black, fontSize: 14.0)),
-                Text(employee['employeeName'],
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold)),
-                Text(
-                  employee['isAvailable'] ? 'Available' : 'Not Available',
-                  style: TextStyle(
-                    color: employee['isAvailable'] ? Colors.green : Colors.red,
-                    fontWeight: FontWeight.bold,
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                if (isSelected) {
+                  // Unselect if already selected
+                  selectedEmployeeId = '';
+                  selectedEmployeeName = '';
+                } else {
+                  // Select the employee
+                  selectedEmployeeId = employee['id'].toString();
+                  selectedEmployeeName = employee['employeeName'];
+                }
+              });
+            },
+            child: Container(
+              width: 140, // Set a fixed width for each employee card
+              margin: EdgeInsets.symmetric(horizontal: 4.0), // Add some spacing
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.blue[100] : Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
                   ),
-                ),
-                if (isSelected) // Show a checkmark or any indicator if selected
-                  Icon(Icons.check_circle, color: Colors.green),
-              ],
+                ],
+              ),
+              child: Column(
+                children: [
+                  imageBytes != null
+                      ? Image.memory(
+                          imageBytes,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          height: 100,
+                          color: Colors.grey[500],
+                          child: Center(
+                            child: Icon(Icons.image,
+                                color: Colors.white, size: 50),
+                          ),
+                        ),
+                  SizedBox(height: 8.0),
+                  Text('ID: ${employee['id']}',
+                      style: TextStyle(color: Colors.black, fontSize: 14.0)),
+                  Text(employee['employeeName'],
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold)),
+                  Text(
+                    employee['isAvailable'] ? 'Available' : 'Not Available',
+                    style: TextStyle(
+                      color:
+                          employee['isAvailable'] ? Colors.green : Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (isSelected) // Show a checkmark or any indicator if selected
+                    Icon(Icons.check_circle, color: Colors.green),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

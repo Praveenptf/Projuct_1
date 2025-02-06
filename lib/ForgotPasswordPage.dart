@@ -34,7 +34,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.1.39:8080/user/generate-Otp-for-User?email=${_emailController.text}'),
+            'http://192.168.1.39:8080/api/user/generate-Otp-for-User?email=${_emailController.text}'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -105,7 +105,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.39:8080/user/forgotPasswordUser'),
+        Uri.parse('http://192.168.1.39:8080/api/user/forgotPasswordUser'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "email": _emailController.text,

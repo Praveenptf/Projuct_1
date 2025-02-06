@@ -65,72 +65,6 @@ class _MappageState extends State<Mappage> {
     await _fetchNearbyParlours(position.latitude, position.longitude);
   }
 
-  // Future<void> _fetchLocationFromBackend(
-  //     double latitude, double longitude) async {
-  //   final url = Uri.parse(
-  //       "http://192.168.1.39:8080/user/userLocation?latitude=$latitude&longitude=$longitude");
-
-  //   try {
-  //     // Show loading indicator
-  //     showDialog(
-  //       context: context,
-  //       barrierDismissible: false,
-  //       builder: (context) => Center(child: CircularProgressIndicator()),
-  //     );
-
-  //     final response = await http.get(
-  //       url,
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Cookie':
-  //             'JSESSIONID=15934606EAE51F4998403EE31B6F0A3B', // Replace with your session ID
-  //       },
-  //     );
-
-  //     Navigator.of(context).pop(); // Dismiss loading indicator
-
-  //     if (response.statusCode >= 200 && response.statusCode < 300) {
-  //       final List<dynamic> data = jsonDecode(response.body);
-
-  //       if (data.isNotEmpty) {
-  //         // Store the nearby parlours
-  //         _nearbyParlours = data; // Assuming the response is a list of parlours
-
-  //         // Example: Extracting specific fields from the first parlour
-  //         var locationData = data[0];
-  //         String parlourName = locationData['parlourName'] ?? 'Unknown';
-  //         String phoneNumber = locationData['phoneNumber'] ?? 'No phone number';
-
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(
-  //               content:
-  //                   Text("Parlour Name: $parlourName, Phone: $phoneNumber")),
-  //         );
-
-  //         // Call the callback function to pass the selected location and nearby parlours back
-  //         widget.onLocationSelected(_tappedLocation!, _nearbyParlours);
-  //       } else {
-  //         print("No data found in the response.");
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(content: Text("No location data found.")),
-  //         );
-  //       }
-  //     } else {
-  //       print("Failed to fetch location. Status Code: ${response.statusCode}");
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //             content: Text(
-  //                 "Failed to fetch location. Status Code: ${response.statusCode}")),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     print("Error fetching location: $e");
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text("Error fetching location from backend")),
-  //     );
-  //   }
-  // }
-
   void _showLocationServiceDialog() {
     showDialog(
       context: context,
@@ -395,7 +329,7 @@ class _MappageState extends State<Mappage> {
 
   Future<void> _fetchNearbyParlours(double latitude, double longitude) async {
     final url = Uri.parse(
-        "http://192.168.1.49:8080/user/userLocation?latitude=$latitude&longitude=$longitude");
+        "http://192.168.1.150:8080/api/user/userLocation?latitude=$latitude&longitude=$longitude");
 
     try {
       final response = await http.get(url);

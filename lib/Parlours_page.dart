@@ -172,7 +172,8 @@ class _ParloursState extends State<Parlours> {
                                     description: parlour['description'] ??
                                         'No Description Available',
                                     id: parlour['id'] ?? 'No id',
-                                    imageUrl: '',
+                                    imageUrl: parlour['image'] ??
+                                        '', // Pass the image URL or base64 string// Decode base64 if necessary
                                   ),
                                 ),
                               );

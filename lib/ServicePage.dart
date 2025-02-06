@@ -90,8 +90,7 @@ class _ServicePageState extends State<ServicePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            CartPage(cartItems: cart.cartItems),
+                        builder: (context) => CartPage(),
                       ),
                     );
                   },

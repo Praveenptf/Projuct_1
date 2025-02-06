@@ -118,7 +118,7 @@ class _RegisterPageState extends State<RegisterPage>
         _passwordErrorMessage == null &&
         _confirmPasswordErrorMessage == null) {
       final response = await http.post(
-        Uri.parse('http://192.168.1.49:8080/user/UserReg'),
+        Uri.parse('http://192.168.1.150:8080/api/user/UserReg'),
         headers: {
           'Content-Type': 'application/json',
         },
