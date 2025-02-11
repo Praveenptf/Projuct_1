@@ -4,6 +4,7 @@ import 'package:firrst_projuct/HomePage.dart';
 import 'package:firrst_projuct/LoginPage.dart';
 import 'package:firrst_projuct/NotificationsPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -43,15 +44,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text(
             'Profile',
-            style: GoogleFonts.adamina(color: Colors.deepPurple.shade800),
+            style: GoogleFonts.oxanium(color: Colors.deepPurple.shade800),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.deepPurple.shade800),
-            onPressed: () => _navigateToHomePage(context),
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              color: Colors.transparent, // Temporary background for debugging
+              child: IconButton(
+                icon: SvgPicture.asset(
+                  'assets/chevron-back.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(
+                      Colors.deepPurple.shade800, BlendMode.srcIn),
+                ),
+                onPressed: () => _navigateToHomePage(context),
+              ),
+            ),
           ),
         ),
         body: Stack(
@@ -121,7 +135,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading:
                         Icon(Icons.person, color: Colors.deepPurple.shade800),
                     title: Text('Edit Profile',
-                        style: TextStyle(color: Colors.deepPurple.shade800)),
+                        style: GoogleFonts.oxanium(
+                            color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
                     onTap: () {
@@ -135,7 +150,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading:
                         Icon(Icons.history, color: Colors.deepPurple.shade800),
                     title: Text('Booking History',
-                        style: TextStyle(color: Colors.deepPurple.shade800)),
+                        style: GoogleFonts.oxanium(
+                            color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
                     onTap: () {
@@ -146,7 +162,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading: Icon(Icons.notifications,
                         color: Colors.deepPurple.shade800),
                     title: Text('Notifications',
-                        style: TextStyle(color: Colors.deepPurple.shade800)),
+                        style: GoogleFonts.oxanium(
+                            color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
                     onTap: () {
@@ -166,7 +183,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading:
                         Icon(Icons.logout, color: Colors.deepPurple.shade800),
                     title: Text('Logout',
-                        style: TextStyle(color: Colors.deepPurple.shade800)),
+                        style: GoogleFonts.oxanium(
+                            color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
                     onTap: () => _logout(context),
@@ -192,27 +210,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Logout'),
-          content: Text('Are you sure you want to logout?'),
+          title: Text(
+            'Logout',
+            style:
+                GoogleFonts.oxanium(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          content: Text('Are you sure you want to logout?',
+              style: GoogleFonts.oxanium()),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: GoogleFonts.oxanium(),
+              ),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Logged out successfully'),
+                  content: Text(
+                    'Logged out successfully',
+                    style: GoogleFonts.oxanium(),
+                  ),
                 ));
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => LoginPage()),
                   (Route<dynamic> route) => false,
                 );
               },
-              child: Text('Logout'),
+              child: Text(
+                'Logout',
+                style: GoogleFonts.oxanium(),
+              ),
             ),
           ],
         );

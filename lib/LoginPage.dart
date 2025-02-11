@@ -4,6 +4,7 @@ import 'package:firrst_projuct/HomePage.dart';
 import 'package:firrst_projuct/RegisterPage.dart';
 import 'package:firrst_projuct/TokenManager.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
@@ -84,7 +85,7 @@ class _LoginPageState extends State<LoginPage>
     if (_mobileErrorMessage == null && _passwordErrorMessage == null) {
       // Proceed with login logic
       final response = await http.post(
-        Uri.parse('http://192.168.1.150:8080/api/user/UserLogin'),
+        Uri.parse('http://192.168.1.11:8086/api/user/UserLogin'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -168,7 +169,7 @@ class _LoginPageState extends State<LoginPage>
                         const SizedBox(height: 35),
                         Text(
                           'Welcome Back',
-                          style: TextStyle(
+                          style: GoogleFonts.oxanium(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -178,7 +179,7 @@ class _LoginPageState extends State<LoginPage>
                         const SizedBox(height: 8),
                         Text(
                           'Login to continue',
-                          style: TextStyle(
+                          style: GoogleFonts.oxanium(
                             fontSize: 16,
                             color: Colors.grey.shade600,
                           ),
@@ -201,6 +202,7 @@ class _LoginPageState extends State<LoginPage>
                             controller: _mobileNumber,
                             decoration: InputDecoration(
                               hintText: 'Mobile Number',
+                              hintStyle: GoogleFonts.oxanium(),
                               prefixIcon: Icon(
                                 Icons.phone,
                                 color: Colors.deepPurple.shade300,
@@ -220,7 +222,7 @@ class _LoginPageState extends State<LoginPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _mobileErrorMessage!,
-                              style: TextStyle(
+                              style: GoogleFonts.oxanium(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -244,6 +246,7 @@ class _LoginPageState extends State<LoginPage>
                             obscureText: !_isPasswordVisible,
                             decoration: InputDecoration(
                               hintText: 'Password',
+                              hintStyle: GoogleFonts.oxanium(),
                               prefixIcon: Icon(
                                 Icons.lock_outline,
                                 color: Colors.deepPurple.shade300,
@@ -275,7 +278,7 @@ class _LoginPageState extends State<LoginPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _passwordErrorMessage!,
-                              style: TextStyle(
+                              style: GoogleFonts.oxanium(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -294,7 +297,7 @@ class _LoginPageState extends State<LoginPage>
                             },
                             child: Text(
                               'Forgot Password?',
-                              style: TextStyle(
+                              style: GoogleFonts.oxanium(
                                 color: Colors.deepPurple.shade400,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -325,10 +328,10 @@ class _LoginPageState extends State<LoginPage>
                             child: InkWell(
                               onTap: _handleLogin,
                               borderRadius: BorderRadius.circular(16),
-                              child: const Center(
+                              child: Center(
                                 child: Text(
                                   'Log In',
-                                  style: TextStyle(
+                                  style: GoogleFonts.oxanium(
                                     color: Colors.white,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
@@ -344,7 +347,7 @@ class _LoginPageState extends State<LoginPage>
                           children: [
                             Text(
                               'Don\'t have an account? ',
-                              style: TextStyle(
+                              style: GoogleFonts.oxanium(
                                 color: Colors.grey.shade600,
                               ),
                             ),
@@ -357,7 +360,7 @@ class _LoginPageState extends State<LoginPage>
                               },
                               child: Text(
                                 'Sign Up',
-                                style: TextStyle(
+                                style: GoogleFonts.oxanium(
                                   color: Colors.deepPurple.shade400,
                                   fontWeight: FontWeight.w600,
                                 ),

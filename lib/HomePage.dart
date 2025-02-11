@@ -5,10 +5,12 @@ import 'package:firrst_projuct/ImageCarousel.dart';
 import 'package:firrst_projuct/Mappage.dart';
 import 'package:firrst_projuct/Parlours_page.dart';
 import 'package:firrst_projuct/ProfileScreen.dart';
+import 'package:firrst_projuct/SearchField.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart'; // Import Geolocator
+import 'package:http/http.dart' as http; // Import http for network requests
 
 class HomePage extends StatefulWidget {
   final List<dynamic> initialNearbyParlours;
@@ -44,6 +46,9 @@ class _HomePageState extends State<HomePage>
       }
     });
 
+    // Call the async method to get location and nearby parlours
+    _getLocationAndNearbyParlours();
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
@@ -68,6 +73,84 @@ class _HomePageState extends State<HomePage>
     _animationController.forward();
   }
 
+  Future<void> _getLocationAndNearbyParlours() async {
+    setState(() {
+      _isLoading = true; // Set loading state
+    });
+
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      await _fetchNearbyParlours(position.latitude, position.longitude);
+    } else {
+      // Handle permission denied case
+      _showLocationPermissionDialog();
+    }
+  }
+
+  Future<void> _fetchNearbyParlours(double latitude, double longitude) async {
+    final url = Uri.parse(
+        "http://192.168.1.11:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> nearbyParlours = jsonDecode(response.body);
+        setState(() {
+          _nearbyParlours = nearbyParlours; // Update nearby parlours
+          _isLoading = false; // Set loading state to false
+        });
+      } else {
+        print(
+            "Failed to fetch nearby parlours. Status Code: ${response.statusCode}");
+        setState(() {
+          _isLoading = false; // Set loading state to false
+        });
+      }
+    } catch (e) {
+      print("Error fetching nearby parlours: $e");
+      setState(() {
+        _isLoading = false; // Set loading state to false
+      });
+    }
+  }
+
+  void _showLocationPermissionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Location Permission Required"),
+          content:
+              Text("Please grant location permission to use this feature."),
+          actions: [
+            TextButton(
+              child: Text("Open Settings"),
+              onPressed: () {
+                Geolocator.openAppSettings();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _onScroll() {
     if (_scrollController.position.userScrollDirection ==
         ScrollDirection.reverse) {
@@ -85,26 +168,6 @@ class _HomePageState extends State<HomePage>
     _searchFocusNode.dispose();
     _animationController.dispose();
     super.dispose();
-  }
-
-  void _onLocationSelected(LatLng location, List<dynamic> nearbyParlours) {
-    setState(() {
-      _nearbyParlours = nearbyParlours;
-      _isLoading = false;
-    });
-  }
-
-  void _filterParlours([String query = '']) {
-    if (query.isEmpty) {
-      // If the search query is empty, reset to the original list
-      _nearbyParlours = widget.initialNearbyParlours;
-    } else {
-      // Filter the parlours based on the search query
-      _nearbyParlours = widget.initialNearbyParlours.where((parlour) {
-        String parlourName = parlour['parlourName']?.toLowerCase() ?? '';
-        return parlourName.contains(query.toLowerCase());
-      }).toList();
-    }
   }
 
   @override
@@ -137,7 +200,7 @@ class _HomePageState extends State<HomePage>
                       children: [
                         Text(
                           "Salon Info",
-                          style: GoogleFonts.adamina(
+                          style: GoogleFonts.oxanium(
                             fontSize: 23,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -160,7 +223,12 @@ class _HomePageState extends State<HomePage>
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Mappage(
-                                    onLocationSelected: _onLocationSelected,
+                                    onLocationSelected:
+                                        (location, nearbyParlours) {
+                                      setState(() {
+                                        _nearbyParlours = nearbyParlours;
+                                      });
+                                    },
                                   ),
                                 ),
                               );
@@ -184,15 +252,22 @@ class _HomePageState extends State<HomePage>
                       ),
                       child: TextField(
                         controller: searchController,
-                        onChanged: (value) {
-                          setState(() {
-                            // Call the method to filter parlours based on the search query
-                            _filterParlours(value);
-                          });
+                        onTap: () {
+                          // Navigate to the SearchPage
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  SearchPage(parlours: _nearbyParlours),
+                            ),
+                          );
                         },
+                        readOnly:
+                            true, // Make it read-only to prevent keyboard from showing
                         decoration: InputDecoration(
                           hintText: 'Search...',
-                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                          hintStyle:
+                              GoogleFonts.oxanium(color: Colors.grey.shade400),
                           prefixIcon: Icon(
                             Icons.search,
                             color: Colors.deepPurple.shade300,
@@ -229,8 +304,8 @@ class _HomePageState extends State<HomePage>
                       children: [
                         Text(
                           'Welcome to Salon Info',
-                          style: GoogleFonts.adamina(
-                            fontSize: 21,
+                          style: GoogleFonts.oxanium(
+                            fontSize: 19,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
                           ),
@@ -238,7 +313,7 @@ class _HomePageState extends State<HomePage>
                         SizedBox(height: 8),
                         Text(
                           'Explore Our Services and Book your Appointment Easily',
-                          style: GoogleFonts.adamina(
+                          style: GoogleFonts.oxanium(
                             fontSize: 13,
                             color: Colors.grey.shade600,
                           ),
@@ -253,8 +328,8 @@ class _HomePageState extends State<HomePage>
                       children: [
                         Text(
                           'Nearby Services',
-                          style: TextStyle(
-                            fontSize: 20,
+                          style: GoogleFonts.oxanium(
+                            fontSize: 17,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
                           ),
@@ -273,7 +348,7 @@ class _HomePageState extends State<HomePage>
                           },
                           child: Text(
                             'View All',
-                            style: TextStyle(
+                            style: GoogleFonts.oxanium(
                               color: Colors.deepPurple.shade400,
                               fontWeight: FontWeight.w600,
                             ),
@@ -412,7 +487,7 @@ class _HomePageState extends State<HomePage>
                                             Text(
                                               parlour['parlourName'] ??
                                                   'Unknown Parlour',
-                                              style: TextStyle(
+                                              style: GoogleFonts.oxanium(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
                                                 color:
@@ -425,7 +500,7 @@ class _HomePageState extends State<HomePage>
                                             Text(
                                               parlour['location'] ??
                                                   'No Location Available',
-                                              style: TextStyle(
+                                              style: GoogleFonts.oxanium(
                                                 fontSize: 12,
                                                 color: Colors.grey.shade600,
                                               ),
@@ -445,7 +520,7 @@ class _HomePageState extends State<HomePage>
                                                   parlour['ratings']
                                                           ?.toString() ??
                                                       'No Ratings',
-                                                  style: TextStyle(
+                                                  style: GoogleFonts.oxanium(
                                                     fontSize: 12,
                                                     color: Colors.grey.shade600,
                                                   ),
@@ -498,6 +573,14 @@ class _HomePageState extends State<HomePage>
           elevation: 0,
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.white.withOpacity(0.6),
+          selectedLabelStyle: GoogleFonts.oxanium(
+            fontWeight: FontWeight.bold, // Change to your desired style
+            fontSize: 14, // Change to your desired size
+          ),
+          unselectedLabelStyle: GoogleFonts.oxanium(
+            fontWeight: FontWeight.normal, // Change to your desired style
+            fontSize: 12, // Change to your desired size
+          ),
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),

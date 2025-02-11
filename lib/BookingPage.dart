@@ -53,7 +53,7 @@ class _BookingPageState extends State<BookingPage> {
     Provider.of<CartModel>(context, listen: false).addItem({
       'title': service['itemName'],
       'price': service['price'].toString(),
-      'imageUrl': service['image'] ?? '', // Ensure you have an image URL
+      'itemImage': service['itemImage'] ?? '', // Ensure you have an image URL
     });
 
     selectedServiceTitles.add(service['itemName']!);
@@ -97,7 +97,7 @@ class _BookingPageState extends State<BookingPage> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.150:8080/api/Items/itemByParlourId?parlourId=$shopId'), // Update the URL as needed
+            'http://192.168.1.11:8086/api/Items/itemByParlourId?parlourId=$shopId'), // Update the URL as needed
         headers: {
           'Content-Type': 'application/json',
           'Cookie':
@@ -139,14 +139,14 @@ class _BookingPageState extends State<BookingPage> {
   List<Map<String, dynamic>> employees = [];
 
   Future<void> _fetchEmployees() async {
-    String? token = await TokenManager.getToken();
     try {
+      // String? token = await TokenManager.getToken();
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.150:8080/api/employees/by-parlourId?parlourId=$shopId'),
+            'http://192.168.1.11:8086/api/employees/by-parlourId?parlourId=$shopId'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
+          // 'Authorization': 'Bearer $token',
         },
       );
 
@@ -159,7 +159,7 @@ class _BookingPageState extends State<BookingPage> {
               'employeeName': employee['employeeName'],
               'isAvailable':
                   employee['isAvailable'] ?? true, // Default to false if null
-              'image': employee['image'], // Assuming you have an image URL
+              // 'image': employee['image'], // Assuming you have an image URL
             };
           }).toList();
         });
@@ -202,7 +202,7 @@ class _BookingPageState extends State<BookingPage> {
     ];
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.150:8080/api/cart/add'),
+      Uri.parse('http://192.168.11.18:8086/api/cart/add'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -707,7 +707,7 @@ class _BookingPageState extends State<BookingPage> {
                           height: 100,
                           color: Colors.grey[500],
                           child: Center(
-                            child: Icon(Icons.image,
+                            child: Icon(Icons.person,
                                 color: Colors.white, size: 50),
                           ),
                         ),

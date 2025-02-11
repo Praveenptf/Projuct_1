@@ -1,6 +1,7 @@
 import 'package:firrst_projuct/HomePage.dart';
 import 'package:firrst_projuct/RegisterPage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FrontPage1 extends StatefulWidget {
   const FrontPage1({super.key});
@@ -73,10 +74,10 @@ class _FrontPage1State extends State<FrontPage1> {
                                   builder: (context) => HomePage()));
                         },
                         borderRadius: BorderRadius.circular(16),
-                        child: const Center(
+                        child: Center(
                           child: Text(
                             'Login In',
-                            style: TextStyle(
+                            style: GoogleFonts.oxanium(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -119,10 +120,10 @@ class _FrontPage1State extends State<FrontPage1> {
                             builder: (context) => RegisterPage()));
                   },
                   borderRadius: BorderRadius.circular(16),
-                  child: const Center(
+                  child: Center(
                     child: Text(
                       'Sign Up',
-                      style: TextStyle(
+                      style: GoogleFonts.oxanium(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -231,7 +232,7 @@ class _OnboardingCardState extends State<OnboardingCard>
           const SizedBox(height: 20),
           Text(
             widget.onboarding.title,
-            style: TextStyle(
+            style: GoogleFonts.oxanium(
               fontSize: 24,
               fontWeight: FontWeight.w700,
               color: Colors.deepPurple.shade800,
@@ -241,7 +242,7 @@ class _OnboardingCardState extends State<OnboardingCard>
           const SizedBox(height: 12),
           Text(
             widget.onboarding.description,
-            style: TextStyle(
+            style: GoogleFonts.oxanium(
               fontSize: 14,
               fontWeight: FontWeight.w400,
               color: Colors.deepPurple.shade800,
@@ -283,7 +284,8 @@ class Onboarding {
 
 List<Onboarding> onboardingList = [
   Onboarding(
-      description: 'Explore Our Services and Book your Appointment Easily !',
+      description:
+          'Discover Our Services and Schedule Your Visit Effortlessly !',
       image: AppAssets.kOnboardingFirst,
       title: 'Welcome to Salon Info'),
 ];

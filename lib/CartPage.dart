@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:firrst_projuct/CartModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,22 +33,36 @@ class CartPage extends StatelessWidget {
                   itemCount: cartItems.length,
                   itemBuilder: (context, index) {
                     final item = cartItems[index];
+                    Uint8List? imageBytes;
+
+                    // Check if the image is not null and decode it
+                    if (item['itemImage'] != null) {
+                      imageBytes = base64Decode(item['itemImage']!);
+                    }
+
                     return Column(
                       children: [
                         ListTile(
                           leading: Container(
                             width: 50,
                             height: 50,
-                            child: Image.network(
-                              item['imageUrl'] ?? '',
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey,
-                                  child: Icon(Icons.error, color: Colors.white),
-                                );
-                              },
-                            ),
+                            child: imageBytes != null
+                                ? Image.memory(
+                                    imageBytes,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        color: Colors.grey,
+                                        child: Icon(Icons.error,
+                                            color: Colors.white),
+                                      );
+                                    },
+                                  )
+                                : Container(
+                                    color: Colors.grey,
+                                    child:
+                                        Icon(Icons.image, color: Colors.white),
+                                  ),
                           ),
                           title: Text(
                             item['title'] ?? '',

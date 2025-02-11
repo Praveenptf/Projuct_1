@@ -43,12 +43,12 @@ class BookingConfirmationPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
-          'Booking Confirmation',
-          style: TextStyle(color: Colors.white),
+          "Services",
+          style: TextStyle(color: Colors.deepPurple.shade800),
         ),
-        backgroundColor: Colors.black,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Colors.deepPurple.shade800),
       ),
       body: SingleChildScrollView(
         // Make the body scrollable

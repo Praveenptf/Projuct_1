@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:firrst_projuct/CartModel.dart';
 import 'package:firrst_projuct/CartPage.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +59,7 @@ class _ServicePageState extends State<ServicePage> {
     Provider.of<CartModel>(context, listen: false).addItem({
       'title': service['itemName'],
       'price': service['price'].toString(),
-      'imageUrl': service['imageUrl'] ?? '', // Ensure you have an image URL
+      'itemImage': service['itemImage'] ?? '', // Ensure you have an image URL
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -156,6 +159,13 @@ class _ServicePageState extends State<ServicePage> {
               itemCount: _getFilteredServices().length,
               itemBuilder: (context, index) {
                 final service = _getFilteredServices()[index];
+                Uint8List? imageBytes;
+
+                // Check if the image is not null and decode it
+                if (service['itemImage'] != null) {
+                  imageBytes = base64Decode(service['itemImage']);
+                }
+
                 return Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Container(
@@ -174,20 +184,25 @@ class _ServicePageState extends State<ServicePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Image placeholder or actual image
-                        Container(
-                          height: 100, // Adjusted height
-                          width: double
-                              .infinity, // Full width of the parent container
-                          decoration: BoxDecoration(
-                            color: Colors.grey[500], // Placeholder color
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Center(
-                            child: Icon(Icons.image,
-                                color: Colors.white, size: 50),
-                          ),
-                        ),
+                        imageBytes != null
+                            ? Image.memory(
+                                imageBytes,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                height: 100, // Adjusted height
+                                width: double
+                                    .infinity, // Full width of the parent container
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[500], // Placeholder color
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.image,
+                                      color: Colors.white, size: 50),
+                                ),
+                              ),
                         Flexible(
                           child: Text(
                             service['itemName'] ?? 'No Name', // Handle null
@@ -300,9 +315,14 @@ class _ServicePageState extends State<ServicePage> {
     if (_selectedFilter == 'All') {
       return widget.services;
     } else {
-      return widget.services
-          .where((service) => service['category'] == _selectedFilter)
-          .toList();
+      return widget.services.where((service) {
+        // Check if the service name contains the selected filter keyword (case insensitive)
+        return service['itemName'] != null &&
+            service['itemName']
+                .toString()
+                .toLowerCase()
+                .contains(_selectedFilter.toLowerCase());
+      }).toList();
     }
   }
 }
