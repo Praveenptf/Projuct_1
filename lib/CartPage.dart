@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:firrst_projuct/CartModel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatelessWidget {
@@ -13,8 +14,22 @@ class CartPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          "Services",
+          "My Cart",
           style: TextStyle(color: Colors.deepPurple.shade800),
+        ),
+        leading: IconButton(
+          icon: SvgPicture.asset(
+            'assets/chevron-back.svg', // Replace with your actual SVG file path
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(
+              Colors.deepPurple.shade800,
+              BlendMode.srcIn,
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         iconTheme: IconThemeData(color: Colors.deepPurple.shade800),
       ),
@@ -35,7 +50,6 @@ class CartPage extends StatelessWidget {
                     final item = cartItems[index];
                     Uint8List? imageBytes;
 
-                    // Check if the image is not null and decode it
                     if (item['itemImage'] != null) {
                       imageBytes = base64Decode(item['itemImage']!);
                     }
@@ -75,15 +89,12 @@ class CartPage extends StatelessWidget {
                           trailing: IconButton(
                             icon: Icon(Icons.delete, color: Colors.black),
                             onPressed: () {
-                              // Show confirmation dialog before deleting
                               _showDeleteConfirmationDialog(context, index);
                             },
                           ),
                         ),
                         if (index != cartItems.length - 1)
-                          Divider(
-                              thickness: 1,
-                              color: Colors.grey), // Add divider between items
+                          Divider(thickness: 1, color: Colors.grey),
                       ],
                     );
                   },
@@ -104,7 +115,7 @@ class CartPage extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: Text("Cancel"),
             ),
@@ -112,7 +123,7 @@ class CartPage extends StatelessWidget {
               onPressed: () {
                 Provider.of<CartModel>(context, listen: false)
                     .removeItem(index);
-                Navigator.of(context).pop(); // Close the dialog after deletion
+                Navigator.of(context).pop();
               },
               child: Text("Delete", style: TextStyle(color: Colors.red)),
             ),

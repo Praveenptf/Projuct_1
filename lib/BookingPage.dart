@@ -6,6 +6,7 @@ import 'package:firrst_projuct/CartPage.dart';
 import 'package:firrst_projuct/ServicePage.dart';
 import 'package:firrst_projuct/TokenManager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -60,7 +61,10 @@ class _BookingPageState extends State<BookingPage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${service['itemName']} added to cart!'),
+        content: Text(
+          '${service['itemName']} added to cart!',
+          style: GoogleFonts.oxanium(),
+        ),
         duration: Duration(seconds: 2),
       ),
     );
@@ -97,7 +101,7 @@ class _BookingPageState extends State<BookingPage> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.11:8086/api/Items/itemByParlourId?parlourId=$shopId'), // Update the URL as needed
+            'http://192.168.1.26:8086/api/Items/itemByParlourId?parlourId=$shopId'), // Update the URL as needed
         headers: {
           'Content-Type': 'application/json',
           'Cookie':
@@ -143,7 +147,7 @@ class _BookingPageState extends State<BookingPage> {
       // String? token = await TokenManager.getToken();
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.11:8086/api/employees/by-parlourId?parlourId=$shopId'),
+            'http://192.168.1.26:8086/api/employees/by-parlourId?parlourId=$shopId'),
         headers: {
           'Content-Type': 'application/json',
           // 'Authorization': 'Bearer $token',
@@ -202,7 +206,7 @@ class _BookingPageState extends State<BookingPage> {
     ];
 
     final response = await http.post(
-      Uri.parse('http://192.168.11.18:8086/api/cart/add'),
+      Uri.parse('http://192.168.1.26:8086/api/cart/add'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -252,9 +256,23 @@ class _BookingPageState extends State<BookingPage> {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: GoogleFonts.adamina(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.oxanium(color: Colors.deepPurple.shade800),
         ),
         backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: SvgPicture.asset(
+            'assets/chevron-back.svg', // Replace with your SVG asset path
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(
+              Colors.deepPurple.shade800,
+              BlendMode.srcIn,
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         iconTheme: IconThemeData(color: Colors.deepPurple.shade800),
         actions: [
           Consumer<CartModel>(
@@ -289,7 +307,7 @@ class _BookingPageState extends State<BookingPage> {
                       ),
                       child: Text(
                         '${cart.cartItems.length}',
-                        style: TextStyle(
+                        style: GoogleFonts.oxanium(
                           color: Colors.white,
                           fontSize: 12,
                         ),
@@ -327,57 +345,71 @@ class _BookingPageState extends State<BookingPage> {
             Divider(),
             _buildSectionTitle('Shop Information'),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ListTile(
-                  title: Text(widget.shopName,
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.deepPurple.shade800)),
-                  subtitle: Text(widget.shopAddress,
-                      style: TextStyle(
-                        color: Colors.black,
-                      )),
+                Text(
+                  widget.shopName,
+                  style: TextStyle(
+                    fontSize: 19,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple.shade800,
+                  ),
                 ),
-                ListTile(
-                  title: Text(widget.contactNumber,
-                      style: TextStyle(color: Colors.black)),
-                  subtitle: Text(widget.description,
-                      style: TextStyle(color: Colors.black)),
+                SizedBox(height: 5), // Small gap
+                Text(
+                  widget.shopAddress,
+                  style: GoogleFonts.oxanium(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
-                // ListTile(
-                //   title: Text('Shop id: ${shopId}',
-                //       style: TextStyle(color: Colors.black87)),
-                // ),
+                SizedBox(height: 8), // Slightly bigger gap
+
+                Text(
+                  widget.contactNumber,
+                  style: GoogleFonts.oxanium(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                SizedBox(height: 5), // Small gap
+                Text(
+                  widget.description,
+                  style: GoogleFonts.oxanium(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
               ],
+            ),
+            SizedBox(
+              height: 13,
             ),
             Divider(),
             Row(
               children: [
                 _buildSectionTitle('Available Services'),
-                Padding(
-                  padding: const EdgeInsets.only(left: 150),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ServicePage(
-                              services: services), // Pass the services here
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'View All',
-                      style: TextStyle(
-                        color: Colors.deepPurple.shade400,
-                        fontWeight: FontWeight.w600,
+                Spacer(), // Pushes the button to the right
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ServicePage(services: services),
                       ),
+                    );
+                  },
+                  child: Text(
+                    'View All',
+                    style: GoogleFonts.oxanium(
+                      color: Colors.deepPurple.shade400,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ],
             ),
+
             _buildServiceList(),
             SizedBox(height: 20),
             Divider(),
@@ -406,7 +438,7 @@ class _BookingPageState extends State<BookingPage> {
                               selectedDate != null
                                   ? DateFormat.yMMMd().format(selectedDate!)
                                   : 'Select Date',
-                              style: TextStyle(
+                              style: GoogleFonts.oxanium(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -442,7 +474,7 @@ class _BookingPageState extends State<BookingPage> {
                                       selectedTime!.minute,
                                       00))
                                   : 'Select Time',
-                              style: TextStyle(
+                              style: GoogleFonts.oxanium(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -465,7 +497,7 @@ class _BookingPageState extends State<BookingPage> {
               isAvailable
                   ? 'The shop is available at this time.'
                   : 'The shop is not available at this time.',
-              style: TextStyle(
+              style: GoogleFonts.oxanium(
                   fontSize: 16,
                   color: isAvailable ? Colors.green : Colors.red,
                   fontWeight: FontWeight.bold),
@@ -483,6 +515,7 @@ class _BookingPageState extends State<BookingPage> {
                   borderRadius: BorderRadius.circular(10.0),
                   boxShadow: [
                     BoxShadow(
+                      // ignore: deprecated_member_use
                       color: Colors.black.withOpacity(0.2),
                       spreadRadius: 2,
                       blurRadius: 5,
@@ -495,7 +528,7 @@ class _BookingPageState extends State<BookingPage> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 50, vertical: 15),
-                    textStyle: const TextStyle(fontSize: 16),
+                    textStyle: GoogleFonts.oxanium(fontSize: 16),
                     backgroundColor: Colors.deepPurple.shade800,
                     foregroundColor: Colors.deepPurple.shade800,
                     shape: RoundedRectangleBorder(
@@ -515,8 +548,8 @@ class _BookingPageState extends State<BookingPage> {
                           valueColor: AlwaysStoppedAnimation<Color>(
                               const Color.fromARGB(255, 69, 39, 160)),
                         )
-                      : const Text('Book Now',
-                          style: TextStyle(color: Colors.white)),
+                      : Text('Book Now',
+                          style: GoogleFonts.oxanium(color: Colors.white)),
                 ),
               ),
             ),
@@ -531,7 +564,7 @@ class _BookingPageState extends State<BookingPage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         title,
-        style: TextStyle(
+        style: GoogleFonts.oxanium(
             fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
       ),
     );
@@ -554,7 +587,7 @@ class _BookingPageState extends State<BookingPage> {
         final service = limitedServices[index];
         Uint8List? imageBytes;
 
-        // Check if the image is not null and decode it
+        // Decode the base64 image if available
         if (service['itemImage'] != null) {
           imageBytes = base64Decode(service['itemImage']);
         }
@@ -576,24 +609,34 @@ class _BookingPageState extends State<BookingPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Display the image
-              imageBytes != null
-                  ? Image.memory(
-                      imageBytes,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    )
-                  : Container(
-                      height: 100,
-                      color: Colors.grey[500],
-                      child: Center(
-                        child: Icon(Icons.image, color: Colors.white, size: 50),
+              ClipRRect(
+                borderRadius:
+                    BorderRadius.circular(8.0), // Rounded corners for the image
+                child: imageBytes != null
+                    ? Image.memory(
+                        imageBytes,
+                        height: 100,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        height: 100,
+                        width: double.infinity,
+                        color: Colors.grey[400],
+                        child: Center(
+                          child:
+                              Icon(Icons.image, color: Colors.white, size: 50),
+                        ),
                       ),
-                    ),
-              Flexible(
+              ),
+              SizedBox(height: 8.0),
+
+              // Item Name
+              Align(
+                alignment: Alignment.centerLeft,
                 child: Text(
-                  service['itemName'] ??
-                      'Unknown Item', // Provide a default value
-                  style: TextStyle(
+                  service['itemName'] ?? 'Unknown Item',
+                  style: GoogleFonts.oxanium(
                     color: Colors.black,
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -602,32 +645,52 @@ class _BookingPageState extends State<BookingPage> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(height: 4.0),
+              SizedBox(height: 6.0),
+
+              // Price
               Text(
-                '\$${service['price'] ?? 'N/A'}', // Provide a default value
-                style: TextStyle(color: Colors.black, fontSize: 14.0),
-              ),
-              SizedBox(height: 4.0),
-              Flexible(
-                child: Text(
-                  service['description'] ??
-                      'No description available', // Provide a default value
-                  style: TextStyle(color: Colors.black, fontSize: 12.0),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                '\$${service['price'] ?? 'N/A'}',
+                style: GoogleFonts.oxanium(
+                  color: Colors.black,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 4.0),
+              SizedBox(height: 5.0),
+
+              // // Description
+              // Flexible(
+              //   child: Text(
+              //     service['description'] ?? 'No Description', // Handle null
+              //     style: TextStyle(color: Colors.black, fontSize: 12.0),
+              //     maxLines: 2, // Limit to two lines
+              //     overflow: TextOverflow.ellipsis,
+              //   ),
+              // ),
+              // SizedBox(height: 5.0),
+
+              // // Availability
               Text(
-                'Available: ${service['availability'] == true ? 'Yes' : 'No'}', // Ensure availability is checked correctly
-                style: TextStyle(color: Colors.black, fontSize: 12.0),
+                'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
+                style: GoogleFonts.oxanium(
+                  color: Colors.black,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              SizedBox(height: 4.0),
+              SizedBox(height: 3.0),
+
+              // Service Time
               Text(
-                'Service Time: ${service['serviceTime'] ?? 'N/A'}', // Provide a default value
-                style: TextStyle(color: Colors.black, fontSize: 12.0),
+                'Service Time: ${service['serviceTime'] ?? 'N/A'}',
+                style: GoogleFonts.oxanium(
+                  color: Colors.black,
+                  fontSize: 12.0,
+                ),
               ),
-              SizedBox(height: 8.0),
+              SizedBox(height: 7.0),
+
+              // Add to Cart Button
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -640,8 +703,13 @@ class _BookingPageState extends State<BookingPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                   ),
-                  child: Text('Add to Cart',
-                      style: TextStyle(color: Colors.white)),
+                  child: Text(
+                    'Add to Cart',
+                    style: GoogleFonts.oxanium(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -713,15 +781,16 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                   SizedBox(height: 8.0),
                   Text('ID: ${employee['id']}',
-                      style: TextStyle(color: Colors.black, fontSize: 14.0)),
+                      style: GoogleFonts.oxanium(
+                          color: Colors.black, fontSize: 14.0)),
                   Text(employee['employeeName'],
-                      style: TextStyle(
+                      style: GoogleFonts.oxanium(
                           color: Colors.black,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold)),
                   Text(
                     employee['isAvailable'] ? 'Available' : 'Not Available',
-                    style: TextStyle(
+                    style: GoogleFonts.oxanium(
                       color:
                           employee['isAvailable'] ? Colors.green : Colors.red,
                       fontWeight: FontWeight.bold,
@@ -757,14 +826,18 @@ class _BookingPageState extends State<BookingPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Time'),
+          title: Text(
+            'Select Time',
+            style: GoogleFonts.oxanium(),
+          ),
           content: Container(
             height: 200,
             child: TimePickerSpinner(
               is24HourMode: false,
-              normalTextStyle: TextStyle(fontSize: 20, color: Colors.black),
-              highlightedTextStyle:
-                  TextStyle(fontSize: 24, color: Colors.deepPurple.shade800),
+              normalTextStyle:
+                  GoogleFonts.oxanium(fontSize: 20, color: Colors.black),
+              highlightedTextStyle: GoogleFonts.oxanium(
+                  fontSize: 24, color: Colors.deepPurple.shade800),
               spacing: 20,
               itemHeight: 40,
               onTimeChange: (time) {

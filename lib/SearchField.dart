@@ -1,5 +1,6 @@
 import 'package:firrst_projuct/BookingPage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SearchPage extends StatefulWidget {
   final List<dynamic> parlours;
@@ -63,7 +64,8 @@ class _SearchPageState extends State<SearchPage> {
                     onChanged: _filterParlours,
                     decoration: InputDecoration(
                       hintText: 'Search...',
-                      hintStyle: TextStyle(color: Colors.grey.shade400),
+                      hintStyle:
+                          GoogleFonts.oxanium(color: Colors.grey.shade400),
                       prefixIcon: Icon(
                         Icons.search,
                         color: Colors.deepPurple.shade300,
@@ -88,7 +90,8 @@ class _SearchPageState extends State<SearchPage> {
                       filled: true,
                       fillColor: Colors.white,
                     ),
-                    style: TextStyle(color: Colors.black), // Change text color
+                    style: GoogleFonts.oxanium(
+                        color: Colors.black), // Change text color
                   ),
                 ),
               ),
@@ -108,8 +111,14 @@ class _SearchPageState extends State<SearchPage> {
                 itemBuilder: (context, index) {
                   final parlour = filteredParlours[index];
                   return ListTile(
-                    title: Text(parlour['parlourName'] ?? 'Unknown'),
-                    subtitle: Text(parlour['location'] ?? 'No Location'),
+                    title: Text(
+                      parlour['parlourName'] ?? 'Unknown',
+                      style: GoogleFonts.oxanium(),
+                    ),
+                    subtitle: Text(
+                      parlour['location'] ?? 'No Location',
+                      style: GoogleFonts.oxanium(),
+                    ),
                     onTap: () {
                       // Navigate to BookingPage or any other page
                       Navigator.push(

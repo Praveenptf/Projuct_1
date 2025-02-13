@@ -6,6 +6,7 @@ import 'package:firrst_projuct/CartPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ServicePage extends StatefulWidget {
@@ -78,7 +79,21 @@ class _ServicePageState extends State<ServicePage> {
         backgroundColor: Colors.white,
         title: Text(
           "Services",
-          style: TextStyle(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.oxanium(color: Colors.deepPurple.shade800),
+        ),
+        leading: IconButton(
+          icon: SvgPicture.asset(
+            'assets/chevron-back.svg', // Replace with your actual SVG file path
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(
+              Colors.deepPurple.shade800,
+              BlendMode.srcIn,
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         iconTheme: IconThemeData(color: Colors.deepPurple.shade800),
         actions: [
@@ -114,7 +129,7 @@ class _ServicePageState extends State<ServicePage> {
                       ),
                       child: Text(
                         '${cart.cartItems.length}',
-                        style: TextStyle(
+                        style: GoogleFonts.oxanium(
                           color: Colors.white,
                           fontSize: 12,
                         ),
@@ -148,119 +163,145 @@ class _ServicePageState extends State<ServicePage> {
             ),
           Expanded(
             child: GridView.builder(
-              controller: _scrollController,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Number of items in a row
-                crossAxisSpacing: 8.0, // Spacing between items horizontally
-                mainAxisSpacing: 8.0, // Spacing between items vertically
-                childAspectRatio:
-                    0.65, // Adjusted aspect ratio to prevent overflow
+                crossAxisCount: 2,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+                childAspectRatio: 0.65,
               ),
               itemCount: _getFilteredServices().length,
               itemBuilder: (context, index) {
                 final service = _getFilteredServices()[index];
                 Uint8List? imageBytes;
 
-                // Check if the image is not null and decode it
+                // Decode the base64 image if available
                 if (service['itemImage'] != null) {
                   imageBytes = base64Decode(service['itemImage']);
                 }
 
-                return Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Container(
-                    padding: EdgeInsets.all(12.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white, // Background color for the container
-                      borderRadius: BorderRadius.circular(8.0), // Rounded edges
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        imageBytes != null
+                return Container(
+                  padding: EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Display the image
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            8.0), // Rounded corners for the image
+                        child: imageBytes != null
                             ? Image.memory(
                                 imageBytes,
                                 height: 100,
+                                width: double.infinity,
                                 fit: BoxFit.cover,
                               )
                             : Container(
-                                height: 100, // Adjusted height
-                                width: double
-                                    .infinity, // Full width of the parent container
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[500], // Placeholder color
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
+                                height: 100,
+                                width: double.infinity,
+                                color: Colors.grey[400],
                                 child: Center(
                                   child: Icon(Icons.image,
                                       color: Colors.white, size: 50),
                                 ),
                               ),
-                        Flexible(
+                      ),
+                      SizedBox(height: 8.0),
+
+                      // Item Name
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          service['itemName'] ?? 'Unknown Item',
+                          style: GoogleFonts.oxanium(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(height: 6.0),
+
+                      // Price
+                      Text(
+                        '\$${service['price'] ?? 'N/A'}',
+                        style: GoogleFonts.oxanium(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 5.0),
+
+                      // // Description
+                      // Flexible(
+                      //   child: Text(
+                      //     service['description'] ?? 'No Description', // Handle null
+                      //     style: TextStyle(color: Colors.black, fontSize: 12.0),
+                      //     maxLines: 2, // Limit to two lines
+                      //     overflow: TextOverflow.ellipsis,
+                      //   ),
+                      // ),
+                      // SizedBox(height: 5.0),
+
+                      // // Availability
+                      Text(
+                        'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
+                        style: GoogleFonts.oxanium(
+                          color: Colors.black,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 3.0),
+
+                      // Service Time
+                      Text(
+                        'Service Time: ${service['serviceTime'] ?? 'N/A'}',
+                        style: GoogleFonts.oxanium(
+                          color: Colors.black,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                      SizedBox(height: 7.0),
+
+                      // Add to Cart Button
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3.0),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            addToCart(context, service);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                          ),
                           child: Text(
-                            service['itemName'] ?? 'No Name', // Handle null
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
+                            'Add to Cart',
+                            style: GoogleFonts.oxanium(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
                             ),
-                            maxLines: 1, // Limit text to one line
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        SizedBox(height: 4.0),
-                        Text(
-                          '\$${service['price']?.toString() ?? '0.00'}', // Handle null
-                          style: TextStyle(color: Colors.black, fontSize: 14.0),
-                        ),
-                        SizedBox(height: 4.0),
-                        Flexible(
-                          child: Text(
-                            service['description'] ??
-                                'No Description', // Handle null
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12.0),
-                            maxLines: 2, // Limit to two lines
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        SizedBox(height: 4.0),
-                        Text(
-                          'Available: ${service['availability'] ? 'Yes' : 'No'}',
-                          style: TextStyle(color: Colors.black, fontSize: 12.0),
-                        ),
-                        SizedBox(height: 4.0),
-                        Text(
-                          'Service Time: ${service['serviceTime'] ?? 'N/A'}', // Handle null
-                          style: TextStyle(color: Colors.black, fontSize: 12.0),
-                        ),
-                        SizedBox(height: 8.0), // Reduced space above the button
-                        Container(
-                          width: double
-                              .infinity, // Ensure button spans the container width
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3.0),
-                          ),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              addToCart(context, service);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black, // Button color
-                            ),
-                            child: Text('Add to Cart',
-                                style: TextStyle(color: Colors.white)),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -301,7 +342,10 @@ class _ServicePageState extends State<ServicePage> {
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                  child: Text('Continue Booking'),
+                  child: Text(
+                    'Continue Booking',
+                    style: GoogleFonts.oxanium(),
+                  ),
                 ),
               ),
             ),
@@ -383,7 +427,8 @@ class _FilterDropdownState extends State<FilterDropdown> {
                 ].map((value) {
                   return DropdownMenuItem(
                     child: Text(value,
-                        style: TextStyle(color: Colors.deepPurple.shade800)),
+                        style: GoogleFonts.oxanium(
+                            color: Colors.deepPurple.shade800)),
                     value: value,
                   );
                 }).toList(),

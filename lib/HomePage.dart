@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> _fetchNearbyParlours(double latitude, double longitude) async {
     final url = Uri.parse(
-        "http://192.168.1.11:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
+        "http://192.168.1.26:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
 
     try {
       final response = await http.get(url);

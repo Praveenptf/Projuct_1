@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:latlong2/latlong.dart';
@@ -128,7 +130,21 @@ class _MappageState extends State<Mappage> {
         backgroundColor: Colors.white,
         title: Text(
           "Search Nearby Parlours",
-          style: TextStyle(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.oxanium(color: Colors.deepPurple.shade800),
+        ),
+        leading: IconButton(
+          icon: SvgPicture.asset(
+            'assets/chevron-back.svg', // Replace with your actual SVG file path
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(
+              Colors.deepPurple.shade800,
+              BlendMode.srcIn,
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         iconTheme: IconThemeData(color: Colors.deepPurple.shade800),
       ),
@@ -152,7 +168,7 @@ class _MappageState extends State<Mappage> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Search Location',
-                  hintStyle: TextStyle(color: Colors.grey.shade400),
+                  hintStyle: GoogleFonts.oxanium(color: Colors.grey.shade400),
                   prefixIcon: Icon(
                     Icons.search,
                     color: Colors.deepPurple.shade300,
@@ -329,7 +345,7 @@ class _MappageState extends State<Mappage> {
 
   Future<void> _fetchNearbyParlours(double latitude, double longitude) async {
     final url = Uri.parse(
-        "http://192.168.1.11:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
+        "http://192.168.1.26:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
 
     try {
       final response = await http.get(url);
