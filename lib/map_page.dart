@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:latlong2/latlong.dart';
+// ignore: depend_on_referenced_packages
 import 'package:geolocator/geolocator.dart';
 
 class Mappage extends StatefulWidget {
@@ -19,7 +20,7 @@ class Mappage extends StatefulWidget {
 
 class _MappageState extends State<Mappage> {
   LatLng? _tappedLocation;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   late MapController _mapController;
   bool _isLoading = false;
   String? _locationName;
@@ -57,6 +58,7 @@ class _MappageState extends State<Mappage> {
     }
 
     Position position = await Geolocator.getCurrentPosition(
+        // ignore: deprecated_member_use
         desiredAccuracy: LocationAccuracy.high);
     setState(() {
       _tappedLocation = LatLng(position.latitude, position.longitude);
@@ -130,7 +132,7 @@ class _MappageState extends State<Mappage> {
         backgroundColor: Colors.white,
         title: Text(
           "Search Nearby Parlours",
-          style: GoogleFonts.oxanium(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.roboto(color: Colors.deepPurple.shade800),
         ),
         leading: IconButton(
           icon: SvgPicture.asset(
@@ -158,6 +160,7 @@ class _MappageState extends State<Mappage> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
+                    // ignore: deprecated_member_use
                     color: Colors.black.withOpacity(0.05),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
@@ -168,7 +171,7 @@ class _MappageState extends State<Mappage> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Search Location',
-                  hintStyle: GoogleFonts.oxanium(color: Colors.grey.shade400),
+                  hintStyle: GoogleFonts.roboto(color: Colors.grey.shade400),
                   prefixIcon: Icon(
                     Icons.search,
                     color: Colors.deepPurple.shade300,
@@ -210,7 +213,7 @@ class _MappageState extends State<Mappage> {
             ),
           ),
           if (_suggestions.isNotEmpty)
-            Container(
+            SizedBox(
               height: 150,
               child: ListView.builder(
                 itemCount: _suggestions.length,
@@ -306,7 +309,9 @@ class _MappageState extends State<Mappage> {
         });
       }
     } catch (e) {
+      // ignore: avoid_print
       print("Exception: $e");
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to fetch suggestions")),
       );
@@ -334,7 +339,9 @@ class _MappageState extends State<Mappage> {
         await _fetchNearbyParlours(point.latitude, point.longitude);
       }
     } catch (e) {
+      // ignore: avoid_print
       print("Exception: $e");
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to get location details")),
       );
@@ -345,7 +352,7 @@ class _MappageState extends State<Mappage> {
 
   Future<void> _fetchNearbyParlours(double latitude, double longitude) async {
     final url = Uri.parse(
-        "http://192.168.1.26:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
+        "http://192.168.1.2:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
 
     try {
       final response = await http.get(url);
@@ -358,14 +365,18 @@ class _MappageState extends State<Mappage> {
         // Call the callback function to pass the selected location and nearby parlours back
         widget.onLocationSelected(_tappedLocation!, _nearbyParlours);
       } else {
+        // ignore: avoid_print
         print(
             "Failed to fetch nearby parlours. Status Code: ${response.statusCode}");
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Failed to fetch nearby parlours")),
         );
       }
     } catch (e) {
+      // ignore: avoid_print
       print("Error fetching nearby parlours: $e");
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error fetching nearby parlours")),
       );
@@ -421,18 +432,23 @@ class _MappageState extends State<Mappage> {
           // Fetch nearby parlours for searched location
           await _fetchNearbyParlours(lat, lon);
         } else {
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Location not found")),
           );
         }
       } else {
+        // ignore: avoid_print
         print("Failed to load location data");
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error fetching data")),
         );
       }
     } catch (e) {
+      // ignore: avoid_print
       print("Exception: $e");
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("An error occurred")),
       );

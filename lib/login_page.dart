@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:firrst_projuct/ForgotPasswordPage.dart';
-import 'package:firrst_projuct/HomePage.dart';
-import 'package:firrst_projuct/RegisterPage.dart';
-import 'package:firrst_projuct/TokenManager.dart';
+import 'package:firrst_projuct/forgotpassword_page.dart';
+import 'package:firrst_projuct/home_page.dart';
+import 'package:firrst_projuct/register_page.dart';
+import 'package:firrst_projuct/token_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -69,6 +69,8 @@ class _LoginPageState extends State<LoginPage>
 
       if (_mobileNumber.text.isEmpty) {
         _mobileErrorMessage = 'Please enter your mobile number';
+      } else if (_mobileNumber.text.length < 10) {
+        _mobileErrorMessage = 'Mobile number must be at least 10 digits';
       }
 
       if (_passwordController.text.isEmpty) {
@@ -85,7 +87,7 @@ class _LoginPageState extends State<LoginPage>
     if (_mobileErrorMessage == null && _passwordErrorMessage == null) {
       // Proceed with login logic
       final response = await http.post(
-        Uri.parse('http://192.168.1.26:8086/api/user/UserLogin'),
+        Uri.parse('http://192.168.1.2:8086/api/user/UserLogin'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -96,19 +98,23 @@ class _LoginPageState extends State<LoginPage>
       );
 
       // Log the response status and body
+      // ignore: avoid_print
       print('Response status: ${response.statusCode}');
+      // ignore: avoid_print
       print('Response body: ${response.body}'); // Log the response body
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         // If the server returns an OK response, handle the JWT
         String token =
             response.body; // Directly use the response body as the token
+        // ignore: avoid_print
         print('Token: $token'); // Log the token
 
         // Store the token using TokenManager
         await TokenManager.storeToken(token);
 
         Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
@@ -169,7 +175,7 @@ class _LoginPageState extends State<LoginPage>
                         const SizedBox(height: 35),
                         Text(
                           'Welcome Back',
-                          style: GoogleFonts.oxanium(
+                          style: GoogleFonts.roboto(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -179,7 +185,7 @@ class _LoginPageState extends State<LoginPage>
                         const SizedBox(height: 8),
                         Text(
                           'Login to continue',
-                          style: GoogleFonts.oxanium(
+                          style: GoogleFonts.roboto(
                             fontSize: 16,
                             color: Colors.grey.shade600,
                           ),
@@ -192,6 +198,7 @@ class _LoginPageState extends State<LoginPage>
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
+                                // ignore: deprecated_member_use
                                 color: Colors.black.withOpacity(0.05),
                                 blurRadius: 15,
                                 offset: const Offset(0, 5),
@@ -202,7 +209,7 @@ class _LoginPageState extends State<LoginPage>
                             controller: _mobileNumber,
                             decoration: InputDecoration(
                               hintText: 'Mobile Number',
-                              hintStyle: GoogleFonts.oxanium(),
+                              hintStyle: GoogleFonts.roboto(),
                               prefixIcon: Icon(
                                 Icons.phone,
                                 color: Colors.deepPurple.shade300,
@@ -222,7 +229,7 @@ class _LoginPageState extends State<LoginPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _mobileErrorMessage!,
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -235,6 +242,7 @@ class _LoginPageState extends State<LoginPage>
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
+                                // ignore: deprecated_member_use
                                 color: Colors.black.withOpacity(0.05),
                                 blurRadius: 15,
                                 offset: const Offset(0, 5),
@@ -246,7 +254,7 @@ class _LoginPageState extends State<LoginPage>
                             obscureText: !_isPasswordVisible,
                             decoration: InputDecoration(
                               hintText: 'Password',
-                              hintStyle: GoogleFonts.oxanium(),
+                              hintStyle: GoogleFonts.roboto(),
                               prefixIcon: Icon(
                                 Icons.lock_outline,
                                 color: Colors.deepPurple.shade300,
@@ -278,7 +286,7 @@ class _LoginPageState extends State<LoginPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _passwordErrorMessage!,
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -297,7 +305,7 @@ class _LoginPageState extends State<LoginPage>
                             },
                             child: Text(
                               'Forgot Password?',
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                 color: Colors.deepPurple.shade400,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -317,6 +325,7 @@ class _LoginPageState extends State<LoginPage>
                             ),
                             boxShadow: [
                               BoxShadow(
+                                // ignore: deprecated_member_use
                                 color: Colors.deepPurple.withOpacity(0.3),
                                 blurRadius: 15,
                                 offset: const Offset(0, 5),
@@ -331,7 +340,7 @@ class _LoginPageState extends State<LoginPage>
                               child: Center(
                                 child: Text(
                                   'Log In',
-                                  style: GoogleFonts.oxanium(
+                                  style: GoogleFonts.roboto(
                                     color: Colors.white,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
@@ -347,7 +356,7 @@ class _LoginPageState extends State<LoginPage>
                           children: [
                             Text(
                               'Don\'t have an account? ',
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                 color: Colors.grey.shade600,
                               ),
                             ),
@@ -360,7 +369,7 @@ class _LoginPageState extends State<LoginPage>
                               },
                               child: Text(
                                 'Sign Up',
-                                style: GoogleFonts.oxanium(
+                                style: GoogleFonts.roboto(
                                   color: Colors.deepPurple.shade400,
                                   fontWeight: FontWeight.w600,
                                 ),

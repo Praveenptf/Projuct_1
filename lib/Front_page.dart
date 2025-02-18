@@ -1,5 +1,5 @@
-import 'package:firrst_projuct/HomePage.dart';
-import 'package:firrst_projuct/RegisterPage.dart';
+import 'package:firrst_projuct/home_page.dart';
+import 'package:firrst_projuct/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -58,6 +58,7 @@ class _FrontPage1State extends State<FrontPage1> {
                       ),
                       boxShadow: [
                         BoxShadow(
+                          // ignore: deprecated_member_use
                           color: Colors.deepPurple.withOpacity(0.3),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
@@ -76,8 +77,8 @@ class _FrontPage1State extends State<FrontPage1> {
                         borderRadius: BorderRadius.circular(16),
                         child: Center(
                           child: Text(
-                            'Login In',
-                            style: GoogleFonts.oxanium(
+                            'Log In',
+                            style: GoogleFonts.roboto(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -123,7 +124,7 @@ class _FrontPage1State extends State<FrontPage1> {
                   child: Center(
                     child: Text(
                       'Sign Up',
-                      style: GoogleFonts.oxanium(
+                      style: GoogleFonts.roboto(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -232,20 +233,19 @@ class _OnboardingCardState extends State<OnboardingCard>
           const SizedBox(height: 20),
           Text(
             widget.onboarding.title,
-            style: GoogleFonts.oxanium(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: Colors.deepPurple.shade800,
-            ),
+            style: GoogleFonts.catamaran(
+                fontSize: 31,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepPurple.shade800),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
           Text(
             widget.onboarding.description,
-            style: GoogleFonts.oxanium(
+            style: GoogleFonts.catamaran(
               fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Colors.deepPurple.shade800,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
             ),
             textAlign: TextAlign.center,
           )
@@ -285,9 +285,9 @@ class Onboarding {
 List<Onboarding> onboardingList = [
   Onboarding(
       description:
-          'Discover Our Services and Schedule Your Visit Effortlessly !',
+          'Discover Our Services and Schedule Your Visit Effortlessly ...!',
       image: AppAssets.kOnboardingFirst,
-      title: 'Welcome to Salon Info'),
+      title: 'Welcome to Salon Info .'),
 ];
 
 class Colorspop {
@@ -298,5 +298,5 @@ class Colorspop {
 }
 
 class AppAssets {
-  static String kOnboardingFirst = 'assets/onboarding_first.png';
+  static String kOnboardingFirst = 'assets/onboarding_12.png';
 }

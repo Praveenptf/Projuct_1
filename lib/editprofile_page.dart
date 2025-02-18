@@ -6,16 +6,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UserProfile extends StatefulWidget {
+  const UserProfile({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _UserProfileState createState() => _UserProfileState();
 }
 
 class _UserProfileState extends State<UserProfile> {
   Future<User>? userFuture;
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   bool _isEditing = false;
   bool _isInitialized = false;
 
@@ -31,7 +34,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<User> fetchUserDetails(int userId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.49:8080/api/parlour/id?id=$userId'),
+      Uri.parse('http://192.168.1.2:8086/api/parlour/id?id=$userId'),
       headers: {
         'Cookie': 'JSESSIONID=ACF91BC7C0410372B5E2DF5E978E186B',
       },
@@ -69,10 +72,12 @@ class _UserProfileState extends State<UserProfile> {
     );
 
     if (response.statusCode == 200) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Changes saved successfully')),
       );
     } else {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to save changes: ${response.body}')),
       );
@@ -103,8 +108,8 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       // Handle the selected image (e.g., upload it or display it)
     }
@@ -155,6 +160,7 @@ class _UserProfileState extends State<UserProfile> {
               try {
                 decodedImage = base64Decode(userData.image);
               } catch (e) {
+                // ignore: avoid_print
                 print('Error decoding image: $e');
               }
             }

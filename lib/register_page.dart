@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:firrst_projuct/HomePage.dart';
-import 'package:firrst_projuct/LoginPage.dart';
-import 'package:firrst_projuct/TokenManager.dart';
+import 'package:firrst_projuct/home_page.dart';
+import 'package:firrst_projuct/login_page.dart';
+import 'package:firrst_projuct/token_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -119,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage>
         _passwordErrorMessage == null &&
         _confirmPasswordErrorMessage == null) {
       final response = await http.post(
-        Uri.parse('http://192.168.1.11:8086/api/user/UserReg'),
+        Uri.parse('http://192.168.1.2:8086/api/user/UserReg'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -132,15 +132,19 @@ class _RegisterPageState extends State<RegisterPage>
         }),
       );
 
+      // ignore: avoid_print
       print('Response status: ${response.statusCode}');
+      // ignore: avoid_print
       print('Response body: ${response.body}');
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         String token = response.body;
+        // ignore: avoid_print
         print('Token: $token');
         await TokenManager.storeToken(token);
 
         Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
@@ -201,7 +205,7 @@ class _RegisterPageState extends State<RegisterPage>
                         const SizedBox(height: 32),
                         Text(
                           'Create Account',
-                          style: GoogleFonts.oxanium(
+                          style: GoogleFonts.roboto(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -211,7 +215,7 @@ class _RegisterPageState extends State<RegisterPage>
                         const SizedBox(height: 8),
                         Text(
                           'Sign up to get started',
-                          style: GoogleFonts.oxanium(
+                          style: GoogleFonts.roboto(
                             fontSize: 16,
                             color: Colors.grey.shade600,
                           ),
@@ -223,7 +227,7 @@ class _RegisterPageState extends State<RegisterPage>
                           controller: _nameController,
                           decoration: InputDecoration(
                             hintText: 'Full Name',
-                            hintStyle: GoogleFonts.oxanium(),
+                            hintStyle: GoogleFonts.roboto(),
                             prefixIcon: Icon(
                               Icons.person_outline,
                               color: Colors.deepPurple.shade300,
@@ -247,7 +251,7 @@ class _RegisterPageState extends State<RegisterPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _nameErrorMessage!,
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -259,7 +263,7 @@ class _RegisterPageState extends State<RegisterPage>
                           controller: _mobileNumber,
                           decoration: InputDecoration(
                             hintText: 'Mobile Number',
-                            hintStyle: GoogleFonts.oxanium(),
+                            hintStyle: GoogleFonts.roboto(),
                             prefixIcon: Icon(
                               Icons.phone,
                               color: Colors.deepPurple.shade300,
@@ -286,7 +290,7 @@ class _RegisterPageState extends State<RegisterPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _mobileErrorMessage!,
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -298,7 +302,7 @@ class _RegisterPageState extends State<RegisterPage>
                           controller: _emailController,
                           decoration: InputDecoration(
                             hintText: 'Email',
-                            hintStyle: GoogleFonts.oxanium(),
+                            hintStyle: GoogleFonts.roboto(),
                             prefixIcon: Icon(
                               Icons.email_outlined,
                               color: Colors.deepPurple.shade300,
@@ -326,7 +330,7 @@ class _RegisterPageState extends State<RegisterPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _emailErrorMessage!,
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -339,7 +343,7 @@ class _RegisterPageState extends State<RegisterPage>
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             hintText: 'Password',
-                            hintStyle: GoogleFonts.oxanium(),
+                            hintStyle: GoogleFonts.roboto(),
                             prefixIcon: Icon(
                               Icons.lock_outline,
                               color: Colors.deepPurple.shade300,
@@ -378,7 +382,7 @@ class _RegisterPageState extends State<RegisterPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _passwordErrorMessage!,
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -391,7 +395,7 @@ class _RegisterPageState extends State<RegisterPage>
                           obscureText: !_isConfirmPasswordVisible,
                           decoration: InputDecoration(
                             hintText: 'Confirm Password',
-                            hintStyle: GoogleFonts.oxanium(),
+                            hintStyle: GoogleFonts.roboto(),
                             prefixIcon: Icon(
                               Icons.lock_outline,
                               color: Colors.deepPurple.shade300,
@@ -431,7 +435,7 @@ class _RegisterPageState extends State<RegisterPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _confirmPasswordErrorMessage!,
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -451,6 +455,7 @@ class _RegisterPageState extends State<RegisterPage>
                             ),
                             boxShadow: [
                               BoxShadow(
+                                // ignore: deprecated_member_use
                                 color: Colors.deepPurple.withOpacity(0.3),
                                 blurRadius: 15,
                                 offset: const Offset(0, 5),
@@ -465,7 +470,7 @@ class _RegisterPageState extends State<RegisterPage>
                               child: Center(
                                 child: Text(
                                   'Sign Up',
-                                  style: GoogleFonts.oxanium(
+                                  style: GoogleFonts.roboto(
                                     color: Colors.white,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
@@ -482,7 +487,7 @@ class _RegisterPageState extends State<RegisterPage>
                           children: [
                             Text(
                               'Already have an account? ',
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                 color: Colors.grey.shade600,
                               ),
                             ),
@@ -495,7 +500,7 @@ class _RegisterPageState extends State<RegisterPage>
                               },
                               child: Text(
                                 'Login',
-                                style: GoogleFonts.oxanium(
+                                style: GoogleFonts.roboto(
                                   color: Colors.deepPurple.shade400,
                                   fontWeight: FontWeight.w600,
                                 ),

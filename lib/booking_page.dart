@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:firrst_projuct/BookingConfirmationPage.dart';
-import 'package:firrst_projuct/CartModel.dart';
-import 'package:firrst_projuct/CartPage.dart';
-import 'package:firrst_projuct/ServicePage.dart';
-import 'package:firrst_projuct/TokenManager.dart';
+import 'package:firrst_projuct/bookingconfirmation_page.dart';
+import 'package:firrst_projuct/cartmodel.dart';
+import 'package:firrst_projuct/cart_page.dart';
+import 'package:firrst_projuct/service_page.dart';
+import 'package:firrst_projuct/token_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
@@ -20,7 +20,7 @@ class BookingPage extends StatefulWidget {
   final String contactNumber;
   final String description;
   final int id;
-  final String imageUrl; // Add this line
+  final String imageUrl;
 
   const BookingPage({
     super.key,
@@ -31,10 +31,11 @@ class BookingPage extends StatefulWidget {
     required this.description,
     required this.id,
     required this.imageUrl,
-    required parlourDetails, // Add this line
+    required parlourDetails,
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _BookingPageState createState() => _BookingPageState();
 }
 
@@ -54,7 +55,7 @@ class _BookingPageState extends State<BookingPage> {
     Provider.of<CartModel>(context, listen: false).addItem({
       'title': service['itemName'],
       'price': service['price'].toString(),
-      'itemImage': service['itemImage'] ?? '', // Ensure you have an image URL
+      'itemImage': service['itemImage'] ?? '',
     });
 
     selectedServiceTitles.add(service['itemName']!);
@@ -63,7 +64,7 @@ class _BookingPageState extends State<BookingPage> {
       SnackBar(
         content: Text(
           '${service['itemName']} added to cart!',
-          style: GoogleFonts.oxanium(),
+          style: GoogleFonts.roboto(),
         ),
         duration: Duration(seconds: 2),
       ),
@@ -101,11 +102,10 @@ class _BookingPageState extends State<BookingPage> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.26:8086/api/Items/itemByParlourId?parlourId=$shopId'), // Update the URL as needed
+            'http://192.168.1.2:8086/api/Items/itemByParlourId?parlourId=$shopId'),
         headers: {
           'Content-Type': 'application/json',
-          'Cookie':
-              'JSESSIONID=88A396C56F7380D4FE65D5FBACB52C14', // Include the session ID
+          'Cookie': 'JSESSIONID=88A396C56F7380D4FE65D5FBACB52C14',
         },
       );
 
@@ -120,17 +120,19 @@ class _BookingPageState extends State<BookingPage> {
               'description': service['description'],
               'availability': service['availability'],
               'serviceTime': service['serviceTime'],
-              'itemImage': service['itemImage'], // Adjust the key if necessary
+              'itemImage': service['itemImage'],
             };
           }).toList();
         });
       } else {
         setState(() {
-          services = []; // Set to empty list if no services are available
+          services = [];
         });
       }
     } catch (e) {
+      // ignore: avoid_print
       print('Error fetching services: $e');
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error fetching services: $e'),
@@ -141,16 +143,18 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   List<Map<String, dynamic>> employees = [];
-
   Future<void> _fetchEmployees() async {
     try {
-      // String? token = await TokenManager.getToken();
+      String? token = await TokenManager.getToken(); // Get the token
+      // ignore: avoid_print
+      print('Token: $token'); // Log the token for debugging
+
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.26:8086/api/employees/by-parlourId?parlourId=$shopId'),
+            'http://192.168.1.2:8086/api/employees/by-parlourId?parlourId=$shopId'), // Corrected URL
         headers: {
           'Content-Type': 'application/json',
-          // 'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer $token', // Include the token in the header
         },
       );
 
@@ -161,14 +165,17 @@ class _BookingPageState extends State<BookingPage> {
             return {
               'id': employee['id'],
               'employeeName': employee['employeeName'],
-              'isAvailable':
-                  employee['isAvailable'] ?? true, // Default to false if null
-              // 'image': employee['image'], // Assuming you have an image URL
+              'image': employee['image'],
+              'isAvailable': employee['isAvailable'] ?? false,
             };
           }).toList();
         });
       } else {
-        throw Exception('Failed to load employees');
+        print(
+            'Error fetching employees: ${response.statusCode} - ${response.body}');
+        setState(() {
+          employees = [];
+        });
       }
     } catch (e) {
       print('Error fetching employees: $e');
@@ -206,7 +213,7 @@ class _BookingPageState extends State<BookingPage> {
     ];
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.26:8086/api/cart/add'),
+      Uri.parse('http://192.168.1.2:8086/api/cart/add'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -219,8 +226,10 @@ class _BookingPageState extends State<BookingPage> {
     });
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
+      // ignore: avoid_print
       print('Appointment booked successfully!');
       Navigator.push(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(
           builder: (context) => BookingConfirmationPage(
@@ -239,7 +248,9 @@ class _BookingPageState extends State<BookingPage> {
         ),
       );
     } else {
+      // ignore: avoid_print
       print('Failed to book appointment: ${response.body}');
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to book appointment: ${response.body}'),
@@ -256,7 +267,7 @@ class _BookingPageState extends State<BookingPage> {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: GoogleFonts.oxanium(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.roboto(color: Colors.deepPurple.shade800),
         ),
         backgroundColor: Colors.white,
         leading: IconButton(
@@ -307,7 +318,7 @@ class _BookingPageState extends State<BookingPage> {
                       ),
                       child: Text(
                         '${cart.cartItems.length}',
-                        style: GoogleFonts.oxanium(
+                        style: GoogleFonts.roboto(
                           color: Colors.white,
                           fontSize: 12,
                         ),
@@ -333,6 +344,7 @@ class _BookingPageState extends State<BookingPage> {
                   : Image.memory(
                       Uint8List.fromList(base64Decode(widget.imageUrl)),
                       errorBuilder: (context, error, stackTrace) {
+                        // ignore: avoid_print
                         print('Error loading image: $error'); // Debugging
                         return Image.asset(
                           'assets/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg',
@@ -349,7 +361,7 @@ class _BookingPageState extends State<BookingPage> {
               children: [
                 Text(
                   widget.shopName,
-                  style: TextStyle(
+                  style: GoogleFonts.roboto(
                     fontSize: 19,
                     fontWeight: FontWeight.bold,
                     color: Colors.deepPurple.shade800,
@@ -357,31 +369,31 @@ class _BookingPageState extends State<BookingPage> {
                 ),
                 SizedBox(height: 5), // Small gap
                 Text(
-                  widget.shopAddress,
-                  style: GoogleFonts.oxanium(
+                  "Address: ${widget.shopAddress}",
+                  style: GoogleFonts.roboto(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
                 SizedBox(height: 8), // Slightly bigger gap
-
                 Text(
-                  widget.contactNumber,
-                  style: GoogleFonts.oxanium(
+                  "Mob No: ${widget.contactNumber}",
+                  style: GoogleFonts.roboto(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
                 SizedBox(height: 5), // Small gap
                 Text(
-                  widget.description,
-                  style: GoogleFonts.oxanium(
+                  "Description: ${widget.description}",
+                  style: GoogleFonts.roboto(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
             ),
+
             SizedBox(
               height: 13,
             ),
@@ -401,7 +413,7 @@ class _BookingPageState extends State<BookingPage> {
                   },
                   child: Text(
                     'View All',
-                    style: GoogleFonts.oxanium(
+                    style: GoogleFonts.roboto(
                       color: Colors.deepPurple.shade400,
                       fontWeight: FontWeight.w600,
                     ),
@@ -415,6 +427,7 @@ class _BookingPageState extends State<BookingPage> {
             Divider(),
             _buildSectionTitle('Available Employees'), // New section title
             _buildEmployeeList(),
+            Divider(),
             SizedBox(
               height: 10,
             ), // Display employee list
@@ -438,7 +451,7 @@ class _BookingPageState extends State<BookingPage> {
                               selectedDate != null
                                   ? DateFormat.yMMMd().format(selectedDate!)
                                   : 'Select Date',
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -474,7 +487,7 @@ class _BookingPageState extends State<BookingPage> {
                                       selectedTime!.minute,
                                       00))
                                   : 'Select Time',
-                              style: GoogleFonts.oxanium(
+                              style: GoogleFonts.roboto(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -497,7 +510,7 @@ class _BookingPageState extends State<BookingPage> {
               isAvailable
                   ? 'The shop is available at this time.'
                   : 'The shop is not available at this time.',
-              style: GoogleFonts.oxanium(
+              style: GoogleFonts.roboto(
                   fontSize: 16,
                   color: isAvailable ? Colors.green : Colors.red,
                   fontWeight: FontWeight.bold),
@@ -528,7 +541,7 @@ class _BookingPageState extends State<BookingPage> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 50, vertical: 15),
-                    textStyle: GoogleFonts.oxanium(fontSize: 16),
+                    textStyle: GoogleFonts.roboto(fontSize: 16),
                     backgroundColor: Colors.deepPurple.shade800,
                     foregroundColor: Colors.deepPurple.shade800,
                     shape: RoundedRectangleBorder(
@@ -549,7 +562,7 @@ class _BookingPageState extends State<BookingPage> {
                               const Color.fromARGB(255, 69, 39, 160)),
                         )
                       : Text('Book Now',
-                          style: GoogleFonts.oxanium(color: Colors.white)),
+                          style: GoogleFonts.roboto(color: Colors.white)),
                 ),
               ),
             ),
@@ -564,7 +577,7 @@ class _BookingPageState extends State<BookingPage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         title,
-        style: GoogleFonts.oxanium(
+        style: GoogleFonts.roboto(
             fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
       ),
     );
@@ -599,6 +612,7 @@ class _BookingPageState extends State<BookingPage> {
             borderRadius: BorderRadius.circular(8.0),
             boxShadow: [
               BoxShadow(
+                // ignore: deprecated_member_use
                 color: Colors.black.withOpacity(0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
@@ -636,7 +650,7 @@ class _BookingPageState extends State<BookingPage> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   service['itemName'] ?? 'Unknown Item',
-                  style: GoogleFonts.oxanium(
+                  style: GoogleFonts.roboto(
                     color: Colors.black,
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -650,7 +664,7 @@ class _BookingPageState extends State<BookingPage> {
               // Price
               Text(
                 '\$${service['price'] ?? 'N/A'}',
-                style: GoogleFonts.oxanium(
+                style: GoogleFonts.roboto(
                   color: Colors.black,
                   fontSize: 14.0,
                   fontWeight: FontWeight.w600,
@@ -672,7 +686,7 @@ class _BookingPageState extends State<BookingPage> {
               // // Availability
               Text(
                 'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
-                style: GoogleFonts.oxanium(
+                style: GoogleFonts.roboto(
                   color: Colors.black,
                   fontSize: 12.0,
                   fontWeight: FontWeight.w500,
@@ -683,7 +697,7 @@ class _BookingPageState extends State<BookingPage> {
               // Service Time
               Text(
                 'Service Time: ${service['serviceTime'] ?? 'N/A'}',
-                style: GoogleFonts.oxanium(
+                style: GoogleFonts.roboto(
                   color: Colors.black,
                   fontSize: 12.0,
                 ),
@@ -705,7 +719,7 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   child: Text(
                     'Add to Cart',
-                    style: GoogleFonts.oxanium(
+                    style: GoogleFonts.roboto(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
@@ -720,7 +734,7 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Widget _buildEmployeeList() {
-    return Container(
+    return SizedBox(
       height: 200, // Set a fixed height for the horizontal list
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -757,6 +771,7 @@ class _BookingPageState extends State<BookingPage> {
                 borderRadius: BorderRadius.circular(8.0),
                 boxShadow: [
                   BoxShadow(
+                    // ignore: deprecated_member_use
                     color: Colors.black.withOpacity(0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
@@ -781,16 +796,16 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                   SizedBox(height: 8.0),
                   Text('ID: ${employee['id']}',
-                      style: GoogleFonts.oxanium(
+                      style: GoogleFonts.roboto(
                           color: Colors.black, fontSize: 14.0)),
                   Text(employee['employeeName'],
-                      style: GoogleFonts.oxanium(
+                      style: GoogleFonts.roboto(
                           color: Colors.black,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold)),
                   Text(
                     employee['isAvailable'] ? 'Available' : 'Not Available',
-                    style: GoogleFonts.oxanium(
+                    style: GoogleFonts.roboto(
                       color:
                           employee['isAvailable'] ? Colors.green : Colors.red,
                       fontWeight: FontWeight.bold,
@@ -828,15 +843,15 @@ class _BookingPageState extends State<BookingPage> {
         return AlertDialog(
           title: Text(
             'Select Time',
-            style: GoogleFonts.oxanium(),
+            style: GoogleFonts.roboto(),
           ),
-          content: Container(
+          content: SizedBox(
             height: 200,
             child: TimePickerSpinner(
               is24HourMode: false,
               normalTextStyle:
-                  GoogleFonts.oxanium(fontSize: 20, color: Colors.black),
-              highlightedTextStyle: GoogleFonts.oxanium(
+                  GoogleFonts.roboto(fontSize: 20, color: Colors.black),
+              highlightedTextStyle: GoogleFonts.roboto(
                   fontSize: 24, color: Colors.deepPurple.shade800),
               spacing: 20,
               itemHeight: 40,
@@ -852,7 +867,10 @@ class _BookingPageState extends State<BookingPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Done'),
+              child: Text(
+                'Done',
+                style: GoogleFonts.roboto(),
+              ),
             ),
           ],
         );

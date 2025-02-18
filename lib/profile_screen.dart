@@ -1,17 +1,18 @@
 import 'dart:io';
-import 'package:firrst_projuct/EditProfileScreen.dart';
-import 'package:firrst_projuct/HomePage.dart';
-import 'package:firrst_projuct/LoginPage.dart';
-import 'package:firrst_projuct/NotificationsPage.dart';
+import 'package:firrst_projuct/editprofile_page.dart';
+import 'package:firrst_projuct/home_page.dart';
+import 'package:firrst_projuct/login_page.dart';
+import 'package:firrst_projuct/notifications_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
@@ -36,6 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         _navigateToHomePage(context);
@@ -47,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           automaticallyImplyLeading: false,
           title: Text(
             'Profile',
-            style: GoogleFonts.oxanium(color: Colors.deepPurple.shade800),
+            style: GoogleFonts.roboto(color: Colors.deepPurple.shade800),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -135,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading:
                         Icon(Icons.person, color: Colors.deepPurple.shade800),
                     title: Text('Edit Profile',
-                        style: GoogleFonts.oxanium(
+                        style: GoogleFonts.roboto(
                             color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
@@ -150,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading:
                         Icon(Icons.history, color: Colors.deepPurple.shade800),
                     title: Text('Booking History',
-                        style: GoogleFonts.oxanium(
+                        style: GoogleFonts.roboto(
                             color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
@@ -162,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading: Icon(Icons.notifications,
                         color: Colors.deepPurple.shade800),
                     title: Text('Notifications',
-                        style: GoogleFonts.oxanium(
+                        style: GoogleFonts.roboto(
                             color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
@@ -183,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading:
                         Icon(Icons.logout, color: Colors.deepPurple.shade800),
                     title: Text('Logout',
-                        style: GoogleFonts.oxanium(
+                        style: GoogleFonts.roboto(
                             color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
@@ -213,10 +215,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title: Text(
             'Logout',
             style:
-                GoogleFonts.oxanium(fontSize: 16, fontWeight: FontWeight.bold),
+                GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           content: Text('Are you sure you want to logout?',
-              style: GoogleFonts.oxanium()),
+              style: GoogleFonts.roboto()),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -224,7 +226,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
               child: Text(
                 'Cancel',
-                style: GoogleFonts.oxanium(),
+                style: GoogleFonts.roboto(),
               ),
             ),
             TextButton(
@@ -233,7 +235,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(
                     'Logged out successfully',
-                    style: GoogleFonts.oxanium(),
+                    style: GoogleFonts.roboto(),
                   ),
                 ));
                 Navigator.of(context).pushAndRemoveUntil(
@@ -243,7 +245,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
               child: Text(
                 'Logout',
-                style: GoogleFonts.oxanium(),
+                style: GoogleFonts.roboto(),
               ),
             ),
           ],

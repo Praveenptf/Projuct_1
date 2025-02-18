@@ -1,13 +1,14 @@
-import 'package:firrst_projuct/BookingPage.dart';
+import 'package:firrst_projuct/booking_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SearchPage extends StatefulWidget {
   final List<dynamic> parlours;
 
-  SearchPage({Key? key, required this.parlours}) : super(key: key);
+  const SearchPage({super.key, required this.parlours});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SearchPageState createState() => _SearchPageState();
 }
 
@@ -53,6 +54,7 @@ class _SearchPageState extends State<SearchPage> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
+                        // ignore: deprecated_member_use
                         color: Colors.black.withOpacity(0.05),
                         blurRadius: 15,
                         offset: const Offset(0, 5),
@@ -65,7 +67,7 @@ class _SearchPageState extends State<SearchPage> {
                     decoration: InputDecoration(
                       hintText: 'Search...',
                       hintStyle:
-                          GoogleFonts.oxanium(color: Colors.grey.shade400),
+                          GoogleFonts.roboto(color: Colors.grey.shade400),
                       prefixIcon: Icon(
                         Icons.search,
                         color: Colors.deepPurple.shade300,
@@ -90,7 +92,7 @@ class _SearchPageState extends State<SearchPage> {
                       filled: true,
                       fillColor: Colors.white,
                     ),
-                    style: GoogleFonts.oxanium(
+                    style: GoogleFonts.roboto(
                         color: Colors.black), // Change text color
                   ),
                 ),
@@ -111,13 +113,18 @@ class _SearchPageState extends State<SearchPage> {
                 itemBuilder: (context, index) {
                   final parlour = filteredParlours[index];
                   return ListTile(
+                    leading: Icon(
+                      Icons.search,
+                      color: Colors.deepPurple
+                          .shade300, // You can change the color as needed
+                    ),
                     title: Text(
                       parlour['parlourName'] ?? 'Unknown',
-                      style: GoogleFonts.oxanium(),
+                      style: GoogleFonts.roboto(),
                     ),
                     subtitle: Text(
                       parlour['location'] ?? 'No Location',
-                      style: GoogleFonts.oxanium(),
+                      style: GoogleFonts.roboto(),
                     ),
                     onTap: () {
                       // Navigate to BookingPage or any other page

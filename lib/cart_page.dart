@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:firrst_projuct/CartModel.dart';
+import 'package:firrst_projuct/cartmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatelessWidget {
+  const CartPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +18,7 @@ class CartPage extends StatelessWidget {
         backgroundColor: Colors.white,
         title: Text(
           "My Cart",
-          style: TextStyle(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.roboto(color: Colors.deepPurple.shade800),
         ),
         leading: IconButton(
           icon: SvgPicture.asset(
@@ -40,8 +43,8 @@ class CartPage extends StatelessWidget {
           return cartItems.isEmpty
               ? Center(
                   child: Text(
-                    "Your cart is empty",
-                    style: TextStyle(fontSize: 18),
+                    "Your cart is empty  !",
+                    style: GoogleFonts.roboto(fontSize: 17),
                   ),
                 )
               : ListView.builder(
@@ -57,7 +60,7 @@ class CartPage extends StatelessWidget {
                     return Column(
                       children: [
                         ListTile(
-                          leading: Container(
+                          leading: SizedBox(
                             width: 50,
                             height: 50,
                             child: imageBytes != null
@@ -81,10 +84,12 @@ class CartPage extends StatelessWidget {
                           title: Text(
                             item['title'] ?? '',
                             overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.roboto(),
                           ),
                           subtitle: Text(
                             '\$${(double.tryParse(item['price'] ?? '0.0') ?? 0.0).toStringAsFixed(2)}',
                             overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.roboto(),
                           ),
                           trailing: IconButton(
                             icon: Icon(Icons.delete, color: Colors.black),
@@ -109,15 +114,24 @@ class CartPage extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Confirm Deletion"),
-          content:
-              Text("Are you sure you want to delete this item from your cart?"),
+          title: Text(
+            "Confirm Deletion",
+            style:
+                GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            "Are you sure you want to delete this item from your cart?",
+            style: GoogleFonts.roboto(),
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("Cancel"),
+              child: Text(
+                "Cancel",
+                style: GoogleFonts.roboto(),
+              ),
             ),
             TextButton(
               onPressed: () {
@@ -125,7 +139,8 @@ class CartPage extends StatelessWidget {
                     .removeItem(index);
                 Navigator.of(context).pop();
               },
-              child: Text("Delete", style: TextStyle(color: Colors.red)),
+              child:
+                  Text("Delete", style: GoogleFonts.roboto(color: Colors.red)),
             ),
           ],
         );

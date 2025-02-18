@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class NotificationPage extends StatelessWidget {
@@ -8,12 +9,12 @@ class NotificationPage extends StatelessWidget {
   final String? time; // Make time optional
 
   const NotificationPage({
-    Key? key,
+    super.key,
     this.title, // Use optional parameters
     this.message, // Use optional parameters
     this.date, // Use optional parameters
     this.time, // Use optional parameters
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +26,20 @@ class NotificationPage extends StatelessWidget {
           style: GoogleFonts.adamina(color: Colors.deepPurple.shade800),
         ),
         backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: SvgPicture.asset(
+            'assets/chevron-back.svg', // Replace with your actual SVG file path
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(
+              Colors.deepPurple.shade800,
+              BlendMode.srcIn,
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         iconTheme: IconThemeData(color: Colors.deepPurple.shade800),
       ),
       body: title != null &&

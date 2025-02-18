@@ -1,23 +1,26 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:firrst_projuct/BookingPage.dart';
-import 'package:firrst_projuct/ImageCarousel.dart';
-import 'package:firrst_projuct/Mappage.dart';
-import 'package:firrst_projuct/Parlours_page.dart';
-import 'package:firrst_projuct/ProfileScreen.dart';
-import 'package:firrst_projuct/SearchField.dart';
+import 'package:firrst_projuct/DoorToDoorService.dart';
+import 'package:firrst_projuct/booking_page.dart';
+import 'package:firrst_projuct/image_carousel.dart';
+import 'package:firrst_projuct/map_page.dart';
+import 'package:firrst_projuct/parlourspage.dart';
+import 'package:firrst_projuct/profile_screen.dart';
+import 'package:firrst_projuct/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
+// ignore: depend_on_referenced_packages
 import 'package:geolocator/geolocator.dart'; // Import Geolocator
 import 'package:http/http.dart' as http; // Import http for network requests
 
 class HomePage extends StatefulWidget {
   final List<dynamic> initialNearbyParlours;
 
-  HomePage({Key? key, this.initialNearbyParlours = const []}) : super(key: key);
+  const HomePage({super.key, this.initialNearbyParlours = const []});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
@@ -88,6 +91,7 @@ class _HomePageState extends State<HomePage>
     if (permission == LocationPermission.whileInUse ||
         permission == LocationPermission.always) {
       Position position = await Geolocator.getCurrentPosition(
+          // ignore: deprecated_member_use
           desiredAccuracy: LocationAccuracy.high);
       await _fetchNearbyParlours(position.latitude, position.longitude);
     } else {
@@ -98,7 +102,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> _fetchNearbyParlours(double latitude, double longitude) async {
     final url = Uri.parse(
-        "http://192.168.1.26:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
+        "http://192.168.1.2:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
 
     try {
       final response = await http.get(url);
@@ -109,6 +113,7 @@ class _HomePageState extends State<HomePage>
           _isLoading = false; // Set loading state to false
         });
       } else {
+        // ignore: avoid_print
         print(
             "Failed to fetch nearby parlours. Status Code: ${response.statusCode}");
         setState(() {
@@ -116,6 +121,7 @@ class _HomePageState extends State<HomePage>
         });
       }
     } catch (e) {
+      // ignore: avoid_print
       print("Error fetching nearby parlours: $e");
       setState(() {
         _isLoading = false; // Set loading state to false
@@ -172,7 +178,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
+    final List<Widget> pages = [
       Scaffold(
         backgroundColor: Colors.white,
         appBar: _isAppBarVisible
@@ -200,7 +206,7 @@ class _HomePageState extends State<HomePage>
                       children: [
                         Text(
                           "Salon Info",
-                          style: GoogleFonts.oxanium(
+                          style: GoogleFonts.roboto(
                             fontSize: 23,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -244,6 +250,7 @@ class _HomePageState extends State<HomePage>
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: Colors.black.withOpacity(0.05),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
@@ -267,7 +274,7 @@ class _HomePageState extends State<HomePage>
                         decoration: InputDecoration(
                           hintText: 'Search...',
                           hintStyle:
-                              GoogleFonts.oxanium(color: Colors.grey.shade400),
+                              GoogleFonts.roboto(color: Colors.grey.shade400),
                           prefixIcon: Icon(
                             Icons.search,
                             color: Colors.deepPurple.shade300,
@@ -304,7 +311,7 @@ class _HomePageState extends State<HomePage>
                       children: [
                         Text(
                           'Welcome to Salon Info',
-                          style: GoogleFonts.oxanium(
+                          style: GoogleFonts.roboto(
                             fontSize: 19,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -313,7 +320,7 @@ class _HomePageState extends State<HomePage>
                         SizedBox(height: 8),
                         Text(
                           'Explore Our Services and Book your Appointment Easily',
-                          style: GoogleFonts.oxanium(
+                          style: GoogleFonts.roboto(
                             fontSize: 13,
                             color: Colors.grey.shade600,
                           ),
@@ -328,8 +335,8 @@ class _HomePageState extends State<HomePage>
                       children: [
                         Text(
                           'Nearby Services',
-                          style: GoogleFonts.oxanium(
-                            fontSize: 17,
+                          style: GoogleFonts.roboto(
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
                           ),
@@ -348,7 +355,7 @@ class _HomePageState extends State<HomePage>
                           },
                           child: Text(
                             'View All',
-                            style: GoogleFonts.oxanium(
+                            style: GoogleFonts.roboto(
                               color: Colors.deepPurple.shade400,
                               fontWeight: FontWeight.w600,
                             ),
@@ -369,7 +376,7 @@ class _HomePageState extends State<HomePage>
                   else
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Container(
+                      child: SizedBox(
                         height: MediaQuery.of(context).size.height * 0.6,
                         child: GridView.builder(
                           shrinkWrap: true,
@@ -387,6 +394,7 @@ class _HomePageState extends State<HomePage>
                             String? imageUrl = parlour['image'];
                             ImageProvider imageProvider;
 
+                            // ignore: avoid_print
                             print('Image URL: $imageUrl'); // Debugging
 
                             if (imageUrl == null || imageUrl.isEmpty) {
@@ -404,6 +412,7 @@ class _HomePageState extends State<HomePage>
                                     base64Decode(base64String);
                                 imageProvider = MemoryImage(imageBytes);
                               } catch (e) {
+                                // ignore: avoid_print
                                 print('Error processing base64 image: $e');
                                 imageProvider = AssetImage(
                                     'assets/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg');
@@ -416,6 +425,7 @@ class _HomePageState extends State<HomePage>
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
+                                    // ignore: deprecated_member_use
                                     color: Colors.black.withOpacity(0.05),
                                     blurRadius: 10,
                                     offset: const Offset(0, 5),
@@ -458,7 +468,7 @@ class _HomePageState extends State<HomePage>
                                         borderRadius: BorderRadius.vertical(
                                           top: Radius.circular(16),
                                         ),
-                                        child: Container(
+                                        child: SizedBox(
                                           height: 120,
                                           width: double.infinity,
                                           child: FadeInImage(
@@ -468,6 +478,7 @@ class _HomePageState extends State<HomePage>
                                             fit: BoxFit.cover,
                                             imageErrorBuilder:
                                                 (context, error, stackTrace) {
+                                              // ignore: avoid_print
                                               print(
                                                   'Error loading image: $error');
                                               return Image.asset(
@@ -487,7 +498,7 @@ class _HomePageState extends State<HomePage>
                                             Text(
                                               parlour['parlourName'] ??
                                                   'Unknown Parlour',
-                                              style: GoogleFonts.oxanium(
+                                              style: GoogleFonts.roboto(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
                                                 color:
@@ -500,7 +511,7 @@ class _HomePageState extends State<HomePage>
                                             Text(
                                               parlour['location'] ??
                                                   'No Location Available',
-                                              style: GoogleFonts.oxanium(
+                                              style: GoogleFonts.roboto(
                                                 fontSize: 12,
                                                 color: Colors.grey.shade600,
                                               ),
@@ -520,7 +531,7 @@ class _HomePageState extends State<HomePage>
                                                   parlour['ratings']
                                                           ?.toString() ??
                                                       'No Ratings',
-                                                  style: GoogleFonts.oxanium(
+                                                  style: GoogleFonts.roboto(
                                                     fontSize: 12,
                                                     color: Colors.grey.shade600,
                                                   ),
@@ -545,11 +556,12 @@ class _HomePageState extends State<HomePage>
           ),
         ),
       ),
+      DoorToDoorServicePage(),
       ProfileScreen(),
     ];
 
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: pages[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -560,6 +572,7 @@ class _HomePageState extends State<HomePage>
           ),
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: Colors.deepPurple.withOpacity(0.3),
               blurRadius: 15,
               offset: const Offset(0, -5),
@@ -572,20 +585,27 @@ class _HomePageState extends State<HomePage>
           backgroundColor: Colors.transparent,
           elevation: 0,
           selectedItemColor: Colors.white,
+          // ignore: deprecated_member_use
           unselectedItemColor: Colors.white.withOpacity(0.6),
-          selectedLabelStyle: GoogleFonts.oxanium(
-            fontWeight: FontWeight.bold, // Change to your desired style
-            fontSize: 14, // Change to your desired size
+          selectedLabelStyle: GoogleFonts.roboto(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
           ),
-          unselectedLabelStyle: GoogleFonts.oxanium(
-            fontWeight: FontWeight.normal, // Change to your desired style
-            fontSize: 12, // Change to your desired size
+          unselectedLabelStyle: GoogleFonts.roboto(
+            fontWeight: FontWeight.normal,
+            fontSize: 12,
           ),
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home),
               label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              // New item for Door to Door Service
+              icon: Icon(Icons.doorbell_outlined), // Choose an appropriate icon
+              activeIcon: Icon(Icons.doorbell), // Active icon
+              label: 'Door to Door',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),

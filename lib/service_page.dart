@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:firrst_projuct/CartModel.dart';
-import 'package:firrst_projuct/CartPage.dart';
+import 'package:firrst_projuct/cartmodel.dart';
+import 'package:firrst_projuct/cart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
@@ -79,7 +79,7 @@ class _ServicePageState extends State<ServicePage> {
         backgroundColor: Colors.white,
         title: Text(
           "Services",
-          style: GoogleFonts.oxanium(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.roboto(color: Colors.deepPurple.shade800),
         ),
         leading: IconButton(
           icon: SvgPicture.asset(
@@ -129,7 +129,7 @@ class _ServicePageState extends State<ServicePage> {
                       ),
                       child: Text(
                         '${cart.cartItems.length}',
-                        style: GoogleFonts.oxanium(
+                        style: GoogleFonts.roboto(
                           color: Colors.white,
                           fontSize: 12,
                         ),
@@ -188,6 +188,7 @@ class _ServicePageState extends State<ServicePage> {
                     borderRadius: BorderRadius.circular(8.0),
                     boxShadow: [
                       BoxShadow(
+                        // ignore: deprecated_member_use
                         color: Colors.black.withOpacity(0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 5),
@@ -225,7 +226,7 @@ class _ServicePageState extends State<ServicePage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           service['itemName'] ?? 'Unknown Item',
-                          style: GoogleFonts.oxanium(
+                          style: GoogleFonts.roboto(
                             color: Colors.black,
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
@@ -239,7 +240,7 @@ class _ServicePageState extends State<ServicePage> {
                       // Price
                       Text(
                         '\$${service['price'] ?? 'N/A'}',
-                        style: GoogleFonts.oxanium(
+                        style: GoogleFonts.roboto(
                           color: Colors.black,
                           fontSize: 14.0,
                           fontWeight: FontWeight.w600,
@@ -261,7 +262,7 @@ class _ServicePageState extends State<ServicePage> {
                       // // Availability
                       Text(
                         'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
-                        style: GoogleFonts.oxanium(
+                        style: GoogleFonts.roboto(
                           color: Colors.black,
                           fontSize: 12.0,
                           fontWeight: FontWeight.w500,
@@ -272,7 +273,7 @@ class _ServicePageState extends State<ServicePage> {
                       // Service Time
                       Text(
                         'Service Time: ${service['serviceTime'] ?? 'N/A'}',
-                        style: GoogleFonts.oxanium(
+                        style: GoogleFonts.roboto(
                           color: Colors.black,
                           fontSize: 12.0,
                         ),
@@ -294,7 +295,7 @@ class _ServicePageState extends State<ServicePage> {
                           ),
                           child: Text(
                             'Add to Cart',
-                            style: GoogleFonts.oxanium(
+                            style: GoogleFonts.roboto(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
                             ),
@@ -321,6 +322,7 @@ class _ServicePageState extends State<ServicePage> {
                   borderRadius: BorderRadius.circular(10.0),
                   boxShadow: [
                     BoxShadow(
+                      // ignore: deprecated_member_use
                       color: Colors.black.withOpacity(0.2),
                       spreadRadius: 2,
                       blurRadius: 5,
@@ -344,7 +346,7 @@ class _ServicePageState extends State<ServicePage> {
                   ),
                   child: Text(
                     'Continue Booking',
-                    style: GoogleFonts.oxanium(),
+                    style: GoogleFonts.roboto(),
                   ),
                 ),
               ),
@@ -375,10 +377,11 @@ class FilterDropdown extends StatefulWidget {
   final String value;
   final Function(String?) onChanged;
 
-  const FilterDropdown({Key? key, required this.value, required this.onChanged})
-      : super(key: key);
+  const FilterDropdown(
+      {super.key, required this.value, required this.onChanged});
 
   @override
+  // ignore: library_private_types_in_public_api
   _FilterDropdownState createState() => _FilterDropdownState();
 }
 
@@ -426,10 +429,10 @@ class _FilterDropdownState extends State<FilterDropdown> {
                   'Nails',
                 ].map((value) {
                   return DropdownMenuItem(
-                    child: Text(value,
-                        style: GoogleFonts.oxanium(
-                            color: Colors.deepPurple.shade800)),
                     value: value,
+                    child: Text(value,
+                        style: GoogleFonts.roboto(
+                            color: Colors.deepPurple.shade800)),
                   );
                 }).toList(),
                 onChanged: (value) {

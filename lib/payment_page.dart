@@ -7,10 +7,10 @@ class PaymentPage extends StatefulWidget {
   final String orderId;
 
   const PaymentPage(
-      {Key? key, required this.totalAmount, required this.orderId})
-      : super(key: key);
+      {super.key, required this.totalAmount, required this.orderId});
 
   @override
+  // ignore: library_private_types_in_public_api
   _PaymentPageState createState() => _PaymentPageState();
 }
 
@@ -37,6 +37,7 @@ class _PaymentPageState extends State<PaymentPage> {
     try {
       _razorpay.open(options);
     } catch (e) {
+      // ignore: avoid_print
       print("Error: $e");
     }
   }
@@ -125,14 +126,17 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    // ignore: avoid_print
     print("Payment Success: ${response.paymentId}");
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
+    // ignore: avoid_print
     print("Payment Error: ${response.message}");
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
+    // ignore: avoid_print
     print("External Wallet: ${response.walletName}");
   }
 
@@ -144,7 +148,7 @@ class _PaymentPageState extends State<PaymentPage> {
 }
 
 class CreditCardPage extends StatelessWidget {
-  const CreditCardPage({Key? key}) : super(key: key);
+  const CreditCardPage({super.key});
 
   @override
   Widget build(BuildContext context) {

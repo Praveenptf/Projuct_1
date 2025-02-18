@@ -1,4 +1,4 @@
-import 'package:firrst_projuct/PaymentPage.dart';
+import 'package:firrst_projuct/payment_page.dart';
 import 'package:flutter/material.dart';
 
 class BookingConfirmationPage extends StatelessWidget {
@@ -18,7 +18,7 @@ class BookingConfirmationPage extends StatelessWidget {
   final String status; // New field for status
 
   const BookingConfirmationPage({
-    Key? key,
+    super.key,
     required this.selectedServices,
     required this.selectedDate,
     required this.selectedTime,
@@ -33,7 +33,7 @@ class BookingConfirmationPage extends StatelessWidget {
     this.quantity, // Now nullable
     required this.uniqueId,
     this.status = "Pending", // Default status
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +131,7 @@ class BookingConfirmationPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
+                    // ignore: deprecated_member_use
                     color: Colors.grey.withOpacity(0.2),
                     spreadRadius: 3,
                     blurRadius: 5,
@@ -187,7 +188,7 @@ class BookingConfirmationPage extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   textStyle: const TextStyle(fontSize: 16),
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.deepPurple.shade800,
                   foregroundColor: Colors.white,
                 ),
                 onPressed: () {

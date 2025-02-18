@@ -1,5 +1,5 @@
-import 'package:firrst_projuct/CartModel.dart';
-import 'package:firrst_projuct/Front_page.dart';
+import 'package:firrst_projuct/cartmodel.dart';
+import 'package:firrst_projuct/front_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:firrst_projuct/BookingPage.dart';
+import 'package:firrst_projuct/booking_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,12 +11,13 @@ class Parlours extends StatefulWidget {
   final String serviceFilter;
 
   const Parlours({
-    Key? key,
+    super.key,
     required this.parlourShops,
     this.serviceFilter = '',
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _ParloursState createState() => _ParloursState();
 }
 
@@ -61,14 +62,14 @@ class _ParloursState extends State<Parlours> {
               focusNode: searchFocusNode,
               decoration: InputDecoration(
                   hintText: 'Search...',
-                  hintStyle: GoogleFonts.oxanium(color: Colors.grey)),
+                  hintStyle: GoogleFonts.roboto(color: Colors.grey)),
               onChanged: _filterShops,
               cursorColor: Colors.deepPurple,
-              style: GoogleFonts.oxanium(color: Colors.deepPurple),
+              style: GoogleFonts.roboto(color: Colors.deepPurple),
             )
           : Text(
               'Parlours ${widget.serviceFilter}',
-              style: GoogleFonts.oxanium(color: Colors.deepPurple.shade800),
+              style: GoogleFonts.roboto(color: Colors.deepPurple.shade800),
             ),
       iconTheme: IconThemeData(color: Colors.deepPurple.shade800),
       leading: IconButton(
@@ -130,6 +131,7 @@ class _ParloursState extends State<Parlours> {
                     String? imageUrl = parlour['image'];
                     ImageProvider imageProvider;
 
+                    // ignore: avoid_print
                     print('Image URL: $imageUrl'); // Debugging
 
                     if (imageUrl == null || imageUrl.isEmpty) {
@@ -146,6 +148,7 @@ class _ParloursState extends State<Parlours> {
                         final Uint8List imageBytes = base64Decode(base64String);
                         imageProvider = MemoryImage(imageBytes);
                       } catch (e) {
+                        // ignore: avoid_print
                         print('Error processing base64 image: $e');
                         imageProvider = AssetImage(
                             'assets/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg');
@@ -158,6 +161,7 @@ class _ParloursState extends State<Parlours> {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: Colors.black.withOpacity(0.05),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
@@ -195,7 +199,7 @@ class _ParloursState extends State<Parlours> {
                                 borderRadius: BorderRadius.vertical(
                                   top: Radius.circular(16),
                                 ),
-                                child: Container(
+                                child: SizedBox(
                                   height: 120,
                                   width: double.infinity,
                                   child: FadeInImage(
@@ -205,6 +209,7 @@ class _ParloursState extends State<Parlours> {
                                     fit: BoxFit.cover,
                                     imageErrorBuilder:
                                         (context, error, stackTrace) {
+                                      // ignore: avoid_print
                                       print('Error loading image: $error');
                                       return Image.asset(
                                         'assets/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg',
@@ -222,7 +227,7 @@ class _ParloursState extends State<Parlours> {
                                     Text(
                                       parlour['parlourName'] ??
                                           'Unknown Parlour',
-                                      style: GoogleFonts.oxanium(
+                                      style: GoogleFonts.roboto(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.deepPurple.shade800,
@@ -234,7 +239,7 @@ class _ParloursState extends State<Parlours> {
                                     Text(
                                       parlour['location'] ??
                                           'No Location Available',
-                                      style: GoogleFonts.oxanium(
+                                      style: GoogleFonts.roboto(
                                         fontSize: 12,
                                         color: Colors.grey.shade600,
                                       ),
@@ -253,7 +258,7 @@ class _ParloursState extends State<Parlours> {
                                         Text(
                                           parlour['ratings']?.toString() ??
                                               'No Ratings',
-                                          style: GoogleFonts.oxanium(
+                                          style: GoogleFonts.roboto(
                                             fontSize: 12,
                                             color: Colors.grey.shade600,
                                           ),
@@ -273,7 +278,7 @@ class _ParloursState extends State<Parlours> {
               )
             : Center(
                 child: Text('No parlours available',
-                    style: GoogleFonts.oxanium(fontSize: 16)),
+                    style: GoogleFonts.roboto(fontSize: 16)),
               ),
       ),
     );

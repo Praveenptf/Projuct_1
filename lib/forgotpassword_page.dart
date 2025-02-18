@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
 }
 
@@ -116,6 +120,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
       if (response.statusCode == 200) {
         // Handle success (e.g., navigate to login)
+        // ignore: avoid_print
         print("Password reset successfully");
         // Optionally navigate to another page or show a success message
       } else {
@@ -152,6 +157,20 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           style: TextStyle(color: Colors.deepPurple.shade800),
         ),
         backgroundColor: Colors.deepPurple.shade50,
+        leading: IconButton(
+          icon: SvgPicture.asset(
+            'assets/chevron-back.svg', // Replace with your actual SVG file path
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(
+              Colors.deepPurple.shade800,
+              BlendMode.srcIn,
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         iconTheme: IconThemeData(color: Colors.deepPurple.shade800),
       ),
       body: Padding(
@@ -172,6 +191,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
+                      // ignore: deprecated_member_use
                       color: Colors.black.withOpacity(0.05),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
@@ -210,6 +230,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                   boxShadow: [
                     BoxShadow(
+                      // ignore: deprecated_member_use
                       color: Colors.deepPurple.withOpacity(0.3),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
@@ -220,6 +241,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: _isLoading ? null : _sendOTP,
+                    borderRadius: BorderRadius.circular(16),
                     child: _isLoading
                         ? CircularProgressIndicator()
                         : Center(
@@ -228,7 +250,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
-                    borderRadius: BorderRadius.circular(16),
                   ),
                 ),
               ),
@@ -239,6 +260,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
+                      // ignore: deprecated_member_use
                       color: Colors.black.withOpacity(0.05),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
@@ -277,6 +299,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                   boxShadow: [
                     BoxShadow(
+                      // ignore: deprecated_member_use
                       color: Colors.deepPurple.withOpacity(0.3),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
@@ -287,13 +310,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: _verifyOTP,
+                    borderRadius: BorderRadius.circular(16),
                     child: Center(
                       child: Text(
                         "Verify OTP",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    borderRadius: BorderRadius.circular(16),
                   ),
                 ),
               ),
@@ -304,6 +327,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
+                      // ignore: deprecated_member_use
                       color: Colors.black.withOpacity(0.05),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
@@ -334,6 +358,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
+                      // ignore: deprecated_member_use
                       color: Colors.black.withOpacity(0.05),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
@@ -372,6 +397,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                   boxShadow: [
                     BoxShadow(
+                      // ignore: deprecated_member_use
                       color: Colors.deepPurple.withOpacity(0.3),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
@@ -382,13 +408,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: _resetPassword,
+                    borderRadius: BorderRadius.circular(16),
                     child: Center(
                       child: Text(
                         "Reset Password",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    borderRadius: BorderRadius.circular(16),
                   ),
                 ),
               ),
