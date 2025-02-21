@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> _fetchNearbyParlours(double latitude, double longitude) async {
     final url = Uri.parse(
-        "http://192.168.1.2:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
+        "http://192.168.1.16:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
 
     try {
       final response = await http.get(url);
@@ -303,7 +303,43 @@ class _HomePageState extends State<HomePage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(height: 16),
-                  ImageCarousel(),
+                  ImageCarousel(
+                    onImageTap: (offerId) {
+                      // Find the corresponding parlour using the offerId
+                      final parlour = _nearbyParlours.firstWhere(
+                        (parlour) =>
+                            parlour['id'] ==
+                            offerId, // Ensure this matches your data structure
+                        orElse: () => null,
+                      );
+
+                      if (parlour != null) {
+                        // Navigate to the BookingPage with the parlour details
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookingPage(
+                              title: parlour['parlourName'] ?? '',
+                              shopName: parlour['parlourName'] ?? '',
+                              shopAddress:
+                                  parlour['location'] ?? 'No Address Available',
+                              contactNumber: parlour['phoneNumber'] ??
+                                  'No Contact Available',
+                              description: parlour['description'] ??
+                                  'No Description Available',
+                              id: parlour['id'] ?? 0,
+                              imageUrl: parlour['image'] ?? '',
+                              parlourDetails: parlour,
+                            ),
+                          ),
+                        );
+                      } else {
+                        // Handle the case where no matching parlour is found
+                        print(
+                            "No matching parlour found for offerId: $offerId");
+                      }
+                    },
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: Column(

@@ -71,6 +71,121 @@ class _ServicePageState extends State<ServicePage> {
     );
   }
 
+  void _showServiceDetails(BuildContext context, Map<String, dynamic> service) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: Stack(
+            children: [
+              // Top Container with Image & Details
+              Container(
+                height: MediaQuery.of(context).size.height * 0.6,
+                width: MediaQuery.of(context).size.width * 0.8,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.0),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  children: [
+                    // Image Section
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(12.0)),
+                        image: service['itemImage'] != null
+                            ? DecorationImage(
+                                image: MemoryImage(
+                                    base64Decode(service['itemImage'])),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                        color: service['itemImage'] == null
+                            ? Colors.grey[400]
+                            : null,
+                      ),
+                      child: service['itemImage'] == null
+                          ? Center(
+                              child: Icon(Icons.image,
+                                  color: Colors.white, size: 50),
+                            )
+                          : null,
+                    ),
+
+                    // Service Details
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            service['itemName'] ?? 'Unknown Item',
+                            style: GoogleFonts.roboto(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            service['description'] ?? 'No Description',
+                            style: GoogleFonts.roboto(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            'Price: \$${service['price'] ?? 'N/A'}',
+                            style: GoogleFonts.roboto(fontSize: 16),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
+                            style: GoogleFonts.roboto(fontSize: 16),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            'Service Time: ${service['serviceTime'] ?? 'N/A'}',
+                            style: GoogleFonts.roboto(
+                              color: Colors.black,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Close Button in Top Right
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.close, color: Colors.white, size: 25),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -188,20 +303,17 @@ class _ServicePageState extends State<ServicePage> {
                     borderRadius: BorderRadius.circular(8.0),
                     boxShadow: [
                       BoxShadow(
-                        // ignore: deprecated_member_use
                         color: Colors.black.withOpacity(0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 5),
                       ),
                     ],
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Stack(
                     children: [
-                      // Display the image
+                      // Image Container
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                            8.0), // Rounded corners for the image
+                        borderRadius: BorderRadius.circular(8.0),
                         child: imageBytes != null
                             ? Image.memory(
                                 imageBytes,
@@ -219,79 +331,108 @@ class _ServicePageState extends State<ServicePage> {
                                 ),
                               ),
                       ),
-                      SizedBox(height: 8.0),
-
-                      // Item Name
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          service['itemName'] ?? 'Unknown Item',
-                          style: GoogleFonts.roboto(
-                            color: Colors.black,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
+                      // Info Icon in Circular Container at the Top
+                      Positioned(
+                        right: 2,
+                        top: 65, // Position the icon at the top
+                        child: Container(
+                          width:
+                              30, // Set a fixed width for the circular container
+                          height:
+                              30, // Set a fixed height for the circular container
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black.withOpacity(0.5),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          child: Center(
+                            // Center the icon within the container
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.info,
+                                color: Colors.white,
+                                size: 16, // Size of the icon
+                              ),
+                              onPressed: () {
+                                _showServiceDetails(context, service);
+                              },
+                              padding:
+                                  EdgeInsets.zero, // Remove default padding
+                            ),
+                          ),
                         ),
                       ),
-                      SizedBox(height: 6.0),
+                      // Service Details
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom:
+                            50, // Adjust this value to position the text above the button
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Service Name
+                            Text(
+                              service['itemName'] ?? 'Unknown Item',
+                              style: GoogleFonts.roboto(
+                                color: Colors.black,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(
+                                height: 4.0), // Space between name and price
 
-                      // Price
-                      Text(
-                        '\$${service['price'] ?? 'N/A'}',
-                        style: GoogleFonts.roboto(
-                          color: Colors.black,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w600,
+                            // Price
+                            Text(
+                              '\$${service['price'] ?? 'N/A'}',
+                              style: GoogleFonts.roboto(
+                                color: Colors.black,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(
+                                height:
+                                    4.0), // Space between price and availability
+
+                            // Availability
+                            Text(
+                              'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
+                              style: GoogleFonts.roboto(
+                                color: Colors.black,
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(
+                                height:
+                                    4.0), // Space between availability and service time
+
+                            // Service Time
+                            Text(
+                              'Service Time: ${service['serviceTime'] ?? 'N/A'}',
+                              style: GoogleFonts.roboto(
+                                color: Colors.black,
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 5.0),
-
-                      // // Description
-                      // Flexible(
-                      //   child: Text(
-                      //     service['description'] ?? 'No Description', // Handle null
-                      //     style: TextStyle(color: Colors.black, fontSize: 12.0),
-                      //     maxLines: 2, // Limit to two lines
-                      //     overflow: TextOverflow.ellipsis,
-                      //   ),
-                      // ),
-                      // SizedBox(height: 5.0),
-
-                      // // Availability
-                      Text(
-                        'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
-                        style: GoogleFonts.roboto(
-                          color: Colors.black,
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 3.0),
-
-                      // Service Time
-                      Text(
-                        'Service Time: ${service['serviceTime'] ?? 'N/A'}',
-                        style: GoogleFonts.roboto(
-                          color: Colors.black,
-                          fontSize: 12.0,
-                        ),
-                      ),
-                      SizedBox(height: 7.0),
-
                       // Add to Cart Button
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3.0),
-                        ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 3, // Position the button at the bottom
                         child: ElevatedButton(
                           onPressed: () {
                             addToCart(context, service);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
+                            padding: EdgeInsets.symmetric(vertical: 10.0),
                           ),
                           child: Text(
                             'Add to Cart',

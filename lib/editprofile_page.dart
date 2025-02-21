@@ -34,9 +34,10 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<User> fetchUserDetails(int userId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.2:8086/api/parlour/id?id=$userId'),
+      Uri.parse('http://192.168.1.16:8086/api/parlour/id?id=1'),
       headers: {
         'Cookie': 'JSESSIONID=ACF91BC7C0410372B5E2DF5E978E186B',
+        'Authorization': 'Bearer ',
       },
     );
 
@@ -57,7 +58,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> saveChanges(int userId) async {
     final token = await getAuthToken();
     final response = await http.post(
-      Uri.parse('http://192.168.1.49:8080/api/parlour/update'),
+      Uri.parse('http://192.168.1.3:8080/api/parlour/update'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

@@ -233,7 +233,7 @@ class _OnboardingCardState extends State<OnboardingCard>
           const SizedBox(height: 20),
           Text(
             widget.onboarding.title,
-            style: GoogleFonts.catamaran(
+            style: GoogleFonts.alike(
                 fontSize: 31,
                 fontWeight: FontWeight.bold,
                 color: Colors.deepPurple.shade800),
@@ -287,7 +287,7 @@ List<Onboarding> onboardingList = [
       description:
           'Discover Our Services and Schedule Your Visit Effortlessly ...!',
       image: AppAssets.kOnboardingFirst,
-      title: 'Welcome to Salon Info .'),
+      title: 'Welcome to Salon Info '),
 ];
 
 class Colorspop {
