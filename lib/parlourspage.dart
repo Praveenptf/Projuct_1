@@ -62,14 +62,14 @@ class _ParloursState extends State<Parlours> {
               focusNode: searchFocusNode,
               decoration: InputDecoration(
                   hintText: 'Search...',
-                  hintStyle: GoogleFonts.roboto(color: Colors.grey)),
+                  hintStyle: GoogleFonts.raleway(color: Colors.grey)),
               onChanged: _filterShops,
               cursorColor: Colors.deepPurple,
-              style: GoogleFonts.roboto(color: Colors.deepPurple),
+              style: GoogleFonts.raleway(color: Colors.deepPurple),
             )
           : Text(
               'Parlours ${widget.serviceFilter}',
-              style: GoogleFonts.roboto(color: Colors.deepPurple.shade800),
+              style: GoogleFonts.raleway(color: Colors.deepPurple.shade800),
             ),
       iconTheme: IconThemeData(color: Colors.deepPurple.shade800),
       leading: IconButton(
@@ -227,7 +227,7 @@ class _ParloursState extends State<Parlours> {
                                     Text(
                                       parlour['parlourName'] ??
                                           'Unknown Parlour',
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.raleway(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.deepPurple.shade800,
@@ -239,7 +239,7 @@ class _ParloursState extends State<Parlours> {
                                     Text(
                                       parlour['location'] ??
                                           'No Location Available',
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.raleway(
                                         fontSize: 12,
                                         color: Colors.grey.shade600,
                                       ),
@@ -258,7 +258,7 @@ class _ParloursState extends State<Parlours> {
                                         Text(
                                           parlour['ratings']?.toString() ??
                                               'No Ratings',
-                                          style: GoogleFonts.roboto(
+                                          style: GoogleFonts.montserrat(
                                             fontSize: 12,
                                             color: Colors.grey.shade600,
                                           ),
@@ -278,7 +278,7 @@ class _ParloursState extends State<Parlours> {
               )
             : Center(
                 child: Text('No parlours available',
-                    style: GoogleFonts.roboto(fontSize: 16)),
+                    style: GoogleFonts.raleway(fontSize: 16)),
               ),
       ),
     );

@@ -21,5 +21,8 @@ class TokenManager {
     await prefs.remove(_tokenKey);
   }
 
-  static loadToken() {}
+  /// Function to load the token (optional, can be used for clarity)
+  static Future<String?> loadToken() async {
+    return await getToken(); // Simply calls getToken
+  }
 }

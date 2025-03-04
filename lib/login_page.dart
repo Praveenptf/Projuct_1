@@ -85,9 +85,8 @@ class _LoginPageState extends State<LoginPage>
     _validateFields();
 
     if (_mobileErrorMessage == null && _passwordErrorMessage == null) {
-      // Proceed with login logic
       final response = await http.post(
-        Uri.parse('http://192.168.1.16:8086/api/user/UserLogin'),
+        Uri.parse('http://192.168.1.200:8086/api/user/UserLogin'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -97,30 +96,17 @@ class _LoginPageState extends State<LoginPage>
         }),
       );
 
-      // Log the response status and body
-      // ignore: avoid_print
-      print('Response status: ${response.statusCode}');
-      // ignore: avoid_print
-      print('Response body: ${response.body}'); // Log the response body
-
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        // If the server returns an OK response, handle the JWT
         String token =
-            response.body; // Directly use the response body as the token
-        // ignore: avoid_print
-        print('Token: $token'); // Log the token
-
-        // Store the token using TokenManager
-        await TokenManager.storeToken(token);
+            response.body; // Assuming the token is returned in the body
+        await TokenManager.storeToken(token); // Store the token
 
         Navigator.pushReplacement(
-          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
       } else {
         // Handle error response
-        // You can show a Snackbar or a dialog here
       }
     }
   }
@@ -175,7 +161,7 @@ class _LoginPageState extends State<LoginPage>
                         const SizedBox(height: 35),
                         Text(
                           'Welcome Back',
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.raleway(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -185,7 +171,7 @@ class _LoginPageState extends State<LoginPage>
                         const SizedBox(height: 8),
                         Text(
                           'Login to continue',
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.raleway(
                             fontSize: 16,
                             color: Colors.grey.shade600,
                           ),
@@ -209,7 +195,7 @@ class _LoginPageState extends State<LoginPage>
                             controller: _mobileNumber,
                             decoration: InputDecoration(
                               hintText: 'Mobile Number',
-                              hintStyle: GoogleFonts.roboto(),
+                              hintStyle: GoogleFonts.raleway(),
                               prefixIcon: Icon(
                                 Icons.phone,
                                 color: Colors.deepPurple.shade300,
@@ -229,7 +215,7 @@ class _LoginPageState extends State<LoginPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _mobileErrorMessage!,
-                              style: GoogleFonts.roboto(
+                              style: GoogleFonts.raleway(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -254,7 +240,7 @@ class _LoginPageState extends State<LoginPage>
                             obscureText: !_isPasswordVisible,
                             decoration: InputDecoration(
                               hintText: 'Password',
-                              hintStyle: GoogleFonts.roboto(),
+                              hintStyle: GoogleFonts.raleway(),
                               prefixIcon: Icon(
                                 Icons.lock_outline,
                                 color: Colors.deepPurple.shade300,
@@ -286,7 +272,7 @@ class _LoginPageState extends State<LoginPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _passwordErrorMessage!,
-                              style: GoogleFonts.roboto(
+                              style: GoogleFonts.raleway(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -305,7 +291,7 @@ class _LoginPageState extends State<LoginPage>
                             },
                             child: Text(
                               'Forgot Password?',
-                              style: GoogleFonts.roboto(
+                              style: GoogleFonts.raleway(
                                 color: Colors.deepPurple.shade400,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -340,7 +326,7 @@ class _LoginPageState extends State<LoginPage>
                               child: Center(
                                 child: Text(
                                   'Log In',
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.raleway(
                                     color: Colors.white,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
@@ -356,7 +342,7 @@ class _LoginPageState extends State<LoginPage>
                           children: [
                             Text(
                               'Don\'t have an account? ',
-                              style: GoogleFonts.roboto(
+                              style: GoogleFonts.raleway(
                                 color: Colors.grey.shade600,
                               ),
                             ),
@@ -369,7 +355,7 @@ class _LoginPageState extends State<LoginPage>
                               },
                               child: Text(
                                 'Sign Up',
-                                style: GoogleFonts.roboto(
+                                style: GoogleFonts.raleway(
                                   color: Colors.deepPurple.shade400,
                                   fontWeight: FontWeight.w600,
                                 ),

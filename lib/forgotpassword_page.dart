@@ -1,3 +1,4 @@
+import 'package:firrst_projuct/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
@@ -38,7 +39,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.1.39:8080/api/user/generate-Otp-for-User?email=${_emailController.text}'),
+            'http://192.168.1.16:8086/api/user/generate-Otp-for-User?email=${_emailController.text}'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -109,7 +110,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.39:8080/api/user/forgotPasswordUser'),
+        Uri.parse('http://192.168.1.16:8086/api/user/forgotPasswordUser'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "email": _emailController.text,
@@ -123,6 +124,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         // ignore: avoid_print
         print("Password reset successfully");
         // Optionally navigate to another page or show a success message
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Password reset successfully")));
       } else {
         setState(() {
           _isLoading = false;

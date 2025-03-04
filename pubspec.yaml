@@ -50,6 +50,8 @@ dependencies:
   intl: ^0.20.1
   flutter_launcher_icons: ^0.14.3
   flutter_lints: ^5.0.0
+  flutter_polyline_points: ^2.1.0
+  calendar_date_picker2: ^1.1.9
   
 
 dev_dependencies:

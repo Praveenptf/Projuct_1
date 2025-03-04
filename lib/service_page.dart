@@ -74,108 +74,132 @@ class _ServicePageState extends State<ServicePage> {
   void _showServiceDetails(BuildContext context, Map<String, dynamic> service) {
     showDialog(
       context: context,
+      barrierColor:
+          Colors.black.withOpacity(0.5), // Black overlay with 50% opacity
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(16.0),
           ),
+          insetPadding: EdgeInsets.all(20), // Adds spacing from screen edges
           child: Stack(
+            clipBehavior: Clip.none,
             children: [
-              // Top Container with Image & Details
               Container(
-                height: MediaQuery.of(context).size.height * 0.6,
-                width: MediaQuery.of(context).size.width * 0.8,
+                width: MediaQuery.of(context).size.width * 0.85,
+                padding: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
                   color: Colors.white,
+                  borderRadius: BorderRadius.circular(16.0),
                 ),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     // Image Section
-                    Container(
-                      height: 200,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(12.0)),
-                        image: service['itemImage'] != null
-                            ? DecorationImage(
-                                image: MemoryImage(
-                                    base64Decode(service['itemImage'])),
-                                fit: BoxFit.cover,
-                              )
-                            : null,
-                        color: service['itemImage'] == null
-                            ? Colors.grey[400]
-                            : null,
-                      ),
-                      child: service['itemImage'] == null
-                          ? Center(
-                              child: Icon(Icons.image,
-                                  color: Colors.white, size: 50),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: service['itemImage'] != null
+                          ? Image.memory(
+                              base64Decode(service['itemImage']),
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
                             )
-                          : null,
+                          : Container(
+                              height: 200,
+                              width: double.infinity,
+                              color: Colors.grey[300],
+                              child: Center(
+                                child: Icon(Icons.image,
+                                    size: 50, color: Colors.white),
+                              ),
+                            ),
                     ),
 
+                    SizedBox(height: 16.0),
+
                     // Service Details
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            service['itemName'] ?? 'Unknown Item',
-                            style: GoogleFonts.roboto(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            service['description'] ?? 'No Description',
-                            style: GoogleFonts.roboto(fontSize: 16),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            'Price: \$${service['price'] ?? 'N/A'}',
-                            style: GoogleFonts.roboto(fontSize: 16),
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
-                            style: GoogleFonts.roboto(fontSize: 16),
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            'Service Time: ${service['serviceTime'] ?? 'N/A'}',
-                            style: GoogleFonts.roboto(
-                              color: Colors.black,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      service['itemName'] ?? 'Unknown Item',
+                      style: GoogleFonts.raleway(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      service['description'] ?? 'No description available',
+                      style: GoogleFonts.raleway(
+                          fontSize: 16, color: Colors.black54),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 12.0),
+                    Divider(),
+                    SizedBox(height: 12.0),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildDetailText(
+                            'Price:', '\$${service['price'] ?? 'N/A'}'),
+                        _buildDetailText('Available:',
+                            service['availability'] == true ? 'Yes' : 'No'),
+                      ],
+                    ),
+
+                    SizedBox(height: 10.0),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildDetailText(
+                            'Service Time:', service['serviceTime'] ?? 'N/A'),
+                      ],
+                    ),
+
+                    SizedBox(height: 30.0), // Space before button
+
+                    // Add to Cart Button
+                    ElevatedButton(
+                      onPressed: () => addToCart(context, service),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple.shade800,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 14.0, horizontal: 20.0),
+                      ),
+                      child: Text(
+                        'Add to Cart',
+                        style: GoogleFonts.raleway(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
+
+                    SizedBox(height: 10.0), // Space at the bottom
                   ],
                 ),
               ),
 
-              // Close Button in Top Right
+              // Close Button (Outside Container)
               Positioned(
-                top: 10,
-                right: 10,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(Icons.close, color: Colors.white, size: 25),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                top: -15,
+                right: -15,
+                child: ClipOval(
+                  child: Material(
+                    color: Colors.black.withOpacity(0.5), // Black background
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(Icons.close, color: Colors.white, size: 22),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -183,6 +207,20 @@ class _ServicePageState extends State<ServicePage> {
           ),
         );
       },
+    );
+  }
+
+// Helper function for UI consistency
+  Widget _buildDetailText(String label, String value) {
+    return RichText(
+      text: TextSpan(
+        style: GoogleFonts.montserrat(fontSize: 16, color: Colors.black),
+        children: [
+          TextSpan(
+              text: '$label ', style: TextStyle(fontWeight: FontWeight.bold)),
+          TextSpan(text: value, style: TextStyle(color: Colors.black54)),
+        ],
+      ),
     );
   }
 
@@ -194,7 +232,7 @@ class _ServicePageState extends State<ServicePage> {
         backgroundColor: Colors.white,
         title: Text(
           "Services",
-          style: GoogleFonts.roboto(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.raleway(color: Colors.deepPurple.shade800),
         ),
         leading: IconButton(
           icon: SvgPicture.asset(
@@ -244,7 +282,7 @@ class _ServicePageState extends State<ServicePage> {
                       ),
                       child: Text(
                         '${cart.cartItems.length}',
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.raleway(
                           color: Colors.white,
                           fontSize: 12,
                         ),
@@ -277,178 +315,126 @@ class _ServicePageState extends State<ServicePage> {
               ],
             ),
           Expanded(
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
-                childAspectRatio: 0.65,
-              ),
-              itemCount: _getFilteredServices().length,
-              itemBuilder: (context, index) {
-                final service = _getFilteredServices()[index];
-                Uint8List? imageBytes;
+              child: GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8.0, // Match the first code
+              mainAxisSpacing: 8.0, // Match the first code
+              childAspectRatio: 0.8, // Match the first code
+            ),
+            itemCount: _getFilteredServices().length,
+            itemBuilder: (context, index) {
+              final service = _getFilteredServices()[index];
+              Uint8List? imageBytes;
 
-                // Decode the base64 image if available
-                if (service['itemImage'] != null) {
-                  imageBytes = base64Decode(service['itemImage']);
-                }
+              // Decode the base64 image if available
+              if (service['itemImage'] != null) {
+                imageBytes = base64Decode(service['itemImage']);
+              }
 
-                return Container(
-                  padding: EdgeInsets.all(12.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Stack(
-                    children: [
-                      // Image Container
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: imageBytes != null
-                            ? Image.memory(
-                                imageBytes,
-                                height: 100,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              )
-                            : Container(
-                                height: 100,
-                                width: double.infinity,
-                                color: Colors.grey[400],
-                                child: Center(
+              return GestureDetector(
+                onTap: () {
+                  _showServiceDetails(
+                      context, service); // Show service details on card tap
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start, // Align text to the left
+                      children: [
+                        // Image Container
+                        ClipRRect(
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(16)), // Match the first code
+                          child: imageBytes != null
+                              ? Image.memory(
+                                  imageBytes,
+                                  height: 100, // Match the first code
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                )
+                              : Center(
                                   child: Icon(Icons.image,
-                                      color: Colors.white, size: 50),
+                                      color: Colors.white,
+                                      size: 50), // Match the first code
+                                ),
+                        ),
+                        // Service Details
+                        Padding(
+                          padding:
+                              const EdgeInsets.all(10), // Padding for details
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment
+                                .start, // Ensure text is left-aligned
+                            children: [
+                              // Service Name
+                              Text(
+                                service['itemName'] ?? 'Unknown Item',
+                                style: GoogleFonts.raleway(
+                                  color: Colors.black,
+                                  fontSize: 14.0, // Match the first code
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(height: 4.0), // Match the first code
+
+                              // Price
+                              Text(
+                                '\$${service['price'] ?? 'N/A'}',
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.black,
+                                  fontSize: 12.0, // Match the first code
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                      ),
-                      // Info Icon in Circular Container at the Top
-                      Positioned(
-                        right: 2,
-                        top: 65, // Position the icon at the top
-                        child: Container(
-                          width:
-                              30, // Set a fixed width for the circular container
-                          height:
-                              30, // Set a fixed height for the circular container
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.black.withOpacity(0.5),
-                          ),
-                          child: Center(
-                            // Center the icon within the container
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.info,
-                                color: Colors.white,
-                                size: 16, // Size of the icon
+                              SizedBox(height: 4.0), // Match the first code
+
+                              // Availability
+                              Text(
+                                'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
+                                style: GoogleFonts.raleway(
+                                  color: Colors.black,
+                                  fontSize: 11.0, // Match the first code
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                              onPressed: () {
-                                _showServiceDetails(context, service);
-                              },
-                              padding:
-                                  EdgeInsets.zero, // Remove default padding
-                            ),
+                              SizedBox(height: 4.0), // Match the first code
+
+                              // Service Time
+                              Text(
+                                'Service Time: ${service['serviceTime'] ?? 'N/A'}',
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.black,
+                                  fontSize: 11.0, // Match the first code
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      // Service Details
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom:
-                            50, // Adjust this value to position the text above the button
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Service Name
-                            Text(
-                              service['itemName'] ?? 'Unknown Item',
-                              style: GoogleFonts.roboto(
-                                color: Colors.black,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(
-                                height: 4.0), // Space between name and price
-
-                            // Price
-                            Text(
-                              '\$${service['price'] ?? 'N/A'}',
-                              style: GoogleFonts.roboto(
-                                color: Colors.black,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            SizedBox(
-                                height:
-                                    4.0), // Space between price and availability
-
-                            // Availability
-                            Text(
-                              'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
-                              style: GoogleFonts.roboto(
-                                color: Colors.black,
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            SizedBox(
-                                height:
-                                    4.0), // Space between availability and service time
-
-                            // Service Time
-                            Text(
-                              'Service Time: ${service['serviceTime'] ?? 'N/A'}',
-                              style: GoogleFonts.roboto(
-                                color: Colors.black,
-                                fontSize: 12.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Add to Cart Button
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 3, // Position the button at the bottom
-                        child: ElevatedButton(
-                          onPressed: () {
-                            addToCart(context, service);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            padding: EdgeInsets.symmetric(vertical: 10.0),
-                          ),
-                          child: Text(
-                            'Add to Cart',
-                            style: GoogleFonts.roboto(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                );
-              },
-            ),
-          ),
+                ),
+              );
+            },
+          )),
           Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -487,7 +473,7 @@ class _ServicePageState extends State<ServicePage> {
                   ),
                   child: Text(
                     'Continue Booking',
-                    style: GoogleFonts.roboto(),
+                    style: GoogleFonts.raleway(),
                   ),
                 ),
               ),
@@ -572,7 +558,7 @@ class _FilterDropdownState extends State<FilterDropdown> {
                   return DropdownMenuItem(
                     value: value,
                     child: Text(value,
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.raleway(
                             color: Colors.deepPurple.shade800)),
                   );
                 }).toList(),

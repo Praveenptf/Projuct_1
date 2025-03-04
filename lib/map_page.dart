@@ -132,7 +132,7 @@ class _MappageState extends State<Mappage> {
         backgroundColor: Colors.white,
         title: Text(
           "Search Nearby Parlours",
-          style: GoogleFonts.roboto(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.raleway(color: Colors.deepPurple.shade800),
         ),
         leading: IconButton(
           icon: SvgPicture.asset(
@@ -171,7 +171,7 @@ class _MappageState extends State<Mappage> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Search Location',
-                  hintStyle: GoogleFonts.roboto(color: Colors.grey.shade400),
+                  hintStyle: GoogleFonts.raleway(color: Colors.grey.shade400),
                   prefixIcon: Icon(
                     Icons.search,
                     color: Colors.deepPurple.shade300,
@@ -352,7 +352,7 @@ class _MappageState extends State<Mappage> {
 
   Future<void> _fetchNearbyParlours(double latitude, double longitude) async {
     final url = Uri.parse(
-        "http://192.168.1.16:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
+        "http://192.168.1.200:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
 
     try {
       final response = await http.get(url);

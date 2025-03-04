@@ -29,7 +29,7 @@ class _ImageCarousel extends State<ImageCarousel> {
   Future<void> fetchImages() async {
     try {
       final response = await http
-          .get(Uri.parse('http://192.168.1.16:8086/api/offer/getAllOffers'));
+          .get(Uri.parse('http://192.168.1.200:8086/api/offer/getAllOffers'));
 
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);

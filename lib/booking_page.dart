@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:firrst_projuct/bookingconfirmation_page.dart';
 import 'package:firrst_projuct/cartmodel.dart';
 import 'package:firrst_projuct/cart_page.dart';
@@ -44,7 +45,7 @@ class _BookingPageState extends State<BookingPage> {
   TimeOfDay? selectedTime;
   bool isAvailable = true;
   final Set<String> selectedServiceTitles = {};
-  bool isLoading = false;
+  bool isLoading = true;
   int get shopId => widget.id;
   List<Map<String, dynamic>> services = [];
   String? selectedEmployeeId;
@@ -64,7 +65,7 @@ class _BookingPageState extends State<BookingPage> {
       SnackBar(
         content: Text(
           '${service['itemName']} added to cart!',
-          style: GoogleFonts.roboto(),
+          style: GoogleFonts.montserrat(),
         ),
         duration: Duration(seconds: 2),
       ),
@@ -99,10 +100,14 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future<void> _fetchServices() async {
+    setState(() {
+      isLoading = true; // Start loading
+    });
+
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.16:8086/api/Items/itemByParlourId?parlourId=$shopId'),
+            'http://192.168.1.200:8086/api/Items/itemByParlourId?parlourId=$shopId'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': 'JSESSIONID=88A396C56F7380D4FE65D5FBACB52C14',
@@ -130,15 +135,17 @@ class _BookingPageState extends State<BookingPage> {
         });
       }
     } catch (e) {
-      // ignore: avoid_print
       print('Error fetching services: $e');
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error fetching services: $e'),
           duration: Duration(seconds: 3),
         ),
       );
+    } finally {
+      setState(() {
+        isLoading = false; // Stop loading
+      });
     }
   }
 
@@ -151,7 +158,7 @@ class _BookingPageState extends State<BookingPage> {
 
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.16:8086/api/employees/by-parlourId?parlourId=$shopId'), // Corrected URL
+            'http://192.168.1.200:8086/api/employees/by-parlourId?parlourId=$shopId'), // Corrected URL
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token', // Include the token in the header
@@ -213,7 +220,7 @@ class _BookingPageState extends State<BookingPage> {
     ];
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.16:8086/api/cart/add'),
+      Uri.parse('http://192.168.1.200:8086/api/cart/add'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -263,108 +270,132 @@ class _BookingPageState extends State<BookingPage> {
   void _showServiceDetails(BuildContext context, Map<String, dynamic> service) {
     showDialog(
       context: context,
+      barrierColor:
+          Colors.black.withOpacity(0.5), // Black overlay with 50% opacity
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(16.0),
           ),
+          insetPadding: EdgeInsets.all(20), // Adds spacing from screen edges
           child: Stack(
+            clipBehavior: Clip.none,
             children: [
-              // Top Container with Image & Details
               Container(
-                height: MediaQuery.of(context).size.height * 0.6,
-                width: MediaQuery.of(context).size.width * 0.8,
+                width: MediaQuery.of(context).size.width * 0.85,
+                padding: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
                   color: Colors.white,
+                  borderRadius: BorderRadius.circular(16.0),
                 ),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     // Image Section
-                    Container(
-                      height: 200,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(12.0)),
-                        image: service['itemImage'] != null
-                            ? DecorationImage(
-                                image: MemoryImage(
-                                    base64Decode(service['itemImage'])),
-                                fit: BoxFit.cover,
-                              )
-                            : null,
-                        color: service['itemImage'] == null
-                            ? Colors.grey[400]
-                            : null,
-                      ),
-                      child: service['itemImage'] == null
-                          ? Center(
-                              child: Icon(Icons.image,
-                                  color: Colors.white, size: 50),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: service['itemImage'] != null
+                          ? Image.memory(
+                              base64Decode(service['itemImage']),
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
                             )
-                          : null,
+                          : Container(
+                              height: 200,
+                              width: double.infinity,
+                              color: Colors.grey[300],
+                              child: Center(
+                                child: Icon(Icons.image,
+                                    size: 50, color: Colors.white),
+                              ),
+                            ),
                     ),
 
+                    SizedBox(height: 16.0),
+
                     // Service Details
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            service['itemName'] ?? 'Unknown Item',
-                            style: GoogleFonts.roboto(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            service['description'] ?? 'No Description',
-                            style: GoogleFonts.roboto(fontSize: 16),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            'Price: \$${service['price'] ?? 'N/A'}',
-                            style: GoogleFonts.roboto(fontSize: 16),
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
-                            style: GoogleFonts.roboto(fontSize: 16),
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            'Service Time: ${service['serviceTime'] ?? 'N/A'}',
-                            style: GoogleFonts.roboto(
-                              color: Colors.black,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      service['itemName'] ?? 'Unknown Item',
+                      style: GoogleFonts.montserrat(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      service['description'] ?? 'No description available',
+                      style: GoogleFonts.montserrat(
+                          fontSize: 16, color: Colors.black54),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 12.0),
+                    Divider(),
+                    SizedBox(height: 12.0),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildDetailText(
+                            'Price:', '\$${service['price'] ?? 'N/A'}'),
+                        _buildDetailText('Available:',
+                            service['availability'] == true ? 'Yes' : 'No'),
+                      ],
+                    ),
+
+                    SizedBox(height: 10.0),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildDetailText(
+                            'Service Time:', service['serviceTime'] ?? 'N/A'),
+                      ],
+                    ),
+
+                    SizedBox(height: 30.0), // Space before button
+
+                    // Add to Cart Button
+                    ElevatedButton(
+                      onPressed: () => addToCart(context, service),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple.shade800,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 14.0, horizontal: 20.0),
+                      ),
+                      child: Text(
+                        'Add to Cart',
+                        style: GoogleFonts.montserrat(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
+
+                    SizedBox(height: 10.0), // Space at the bottom
                   ],
                 ),
               ),
 
-              // Close Button in Top Right
+              // Close Button (Outside Container)
               Positioned(
-                top: 10,
-                right: 10,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(Icons.close, color: Colors.white, size: 25),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                top: -15,
+                right: -15,
+                child: ClipOval(
+                  child: Material(
+                    color: Colors.black.withOpacity(0.5), // Black background
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(Icons.close, color: Colors.white, size: 22),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -375,92 +406,39 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
+// Helper function for UI consistency
+  Widget _buildDetailText(String label, String value) {
+    return RichText(
+      text: TextSpan(
+        style: GoogleFonts.montserrat(fontSize: 16, color: Colors.black),
+        children: [
+          TextSpan(
+              text: '$label ', style: TextStyle(fontWeight: FontWeight.bold)),
+          TextSpan(text: value, style: TextStyle(color: Colors.black54)),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: GoogleFonts.roboto(color: Colors.deepPurple.shade800),
-        ),
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/chevron-back.svg', // Replace with your SVG asset path
-            width: 24,
-            height: 24,
-            colorFilter: ColorFilter.mode(
-              Colors.deepPurple.shade800,
-              BlendMode.srcIn,
-            ),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        iconTheme: IconThemeData(color: Colors.deepPurple.shade800),
-        actions: [
-          Consumer<CartModel>(
-            builder: (context, cart, child) => Stack(
-              alignment: Alignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.shopping_cart,
-                      color: Colors.deepPurple.shade800),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CartPage(),
-                      ),
-                    );
-                  },
-                ),
-                if (cart.cartItems.isNotEmpty)
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Container(
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      constraints: BoxConstraints(
-                        minWidth: 16,
-                        minHeight: 16,
-                      ),
-                      child: Text(
-                        '${cart.cartItems.length}',
-                        style: GoogleFonts.roboto(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: widget.imageUrl.isEmpty
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            expandedHeight: 300.0,
+            flexibleSpace: FlexibleSpaceBar(
+              background: widget.imageUrl.isEmpty
                   ? Image.asset(
                       'assets/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg',
+                      fit: BoxFit.cover,
                     )
                   : Image.memory(
                       Uint8List.fromList(base64Decode(widget.imageUrl)),
+                      fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        // ignore: avoid_print
-                        print('Error loading image: $error'); // Debugging
                         return Image.asset(
                           'assets/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg',
                           fit: BoxFit.cover,
@@ -468,221 +446,296 @@ class _BookingPageState extends State<BookingPage> {
                       },
                     ),
             ),
-            SizedBox(height: 20),
-            Divider(),
-            _buildSectionTitle('Shop Information'),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.shopName,
-                  style: GoogleFonts.roboto(
-                    fontSize: 19,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple.shade800,
-                  ),
-                ),
-                SizedBox(height: 5), // Small gap
-                Text(
-                  "Address: ${widget.shopAddress}",
-                  style: GoogleFonts.roboto(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: 8), // Slightly bigger gap
-                Text(
-                  "Mob No: ${widget.contactNumber}",
-                  style: GoogleFonts.roboto(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: 5), // Small gap
-                Text(
-                  "Description: ${widget.description}",
-                  style: GoogleFonts.roboto(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(
-              height: 13,
-            ),
-            Divider(),
-            Row(
-              children: [
-                _buildSectionTitle('Available Services'),
-                Spacer(), // Pushes the button to the right
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ServicePage(services: services),
+            pinned: true,
+            backgroundColor: Colors.transparent,
+            title: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black54.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/chevron-back.svg',
+                        width: 24,
+                        height: 24,
+                        color: Colors.white, // Use dynamic text color
                       ),
-                    );
-                  },
-                  child: Text(
-                    'View All',
-                    style: GoogleFonts.roboto(
-                      color: Colors.deepPurple.shade400,
-                      fontWeight: FontWeight.w600,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
                   ),
-                ),
-              ],
-            ),
-
-            _buildServiceList(),
-            SizedBox(height: 20),
-            Divider(),
-            _buildSectionTitle('Available Employees'), // New section title
-            _buildEmployeeList(),
-            Divider(),
-            SizedBox(
-              height: 10,
-            ), // Display employee list
-            _buildSectionTitle('Booking Time'),
-            Column(
-              children: [
-                ListTile(
-                  contentPadding: EdgeInsets.symmetric(
-                      horizontal: 0), // Remove default padding
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black54.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: Consumer<CartModel>(
+                      builder: (context, cart, child) => Stack(
+                        alignment: Alignment.center,
                         children: [
-                          Icon(Icons.calendar_today,
-                              color: Colors.deepPurple.shade800),
-                          SizedBox(width: 8), // Space between icon and text
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Text(
-                              selectedDate != null
-                                  ? DateFormat.yMMMd().format(selectedDate!)
-                                  : 'Select Date',
-                              style: GoogleFonts.roboto(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                          IconButton(
+                            icon:
+                                Icon(Icons.shopping_cart, color: Colors.white),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CartPage(),
+                                ),
+                              );
+                            },
                           ),
+                          if (cart.cartItems.isNotEmpty)
+                            Positioned(
+                              right: 8,
+                              top: 8,
+                              child: Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                constraints: BoxConstraints(
+                                  minWidth: 16,
+                                  minHeight: 16,
+                                ),
+                                child: Text(
+                                  '${cart.cartItems.length}',
+                                  style: GoogleFonts.montserrat(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
-                      Icon(Icons.arrow_forward_ios,
-                          color: Colors.deepPurple.shade800),
-                    ],
-                  ),
-                  onTap: () => _selectDate(context),
-                ),
-                ListTile(
-                  contentPadding: EdgeInsets.symmetric(
-                      horizontal: 0), // Remove default padding
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.access_time,
-                              color: Colors.deepPurple.shade800),
-                          SizedBox(width: 8), // Space between icon and text
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Text(
-                              selectedTime != null
-                                  ? DateFormat.jm().format(DateTime(
-                                      2020,
-                                      1,
-                                      1,
-                                      selectedTime!.hour,
-                                      selectedTime!.minute,
-                                      00))
-                                  : 'Select Time',
-                              style: GoogleFonts.roboto(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Icon(Icons.arrow_forward_ios,
-                          color: Colors.deepPurple.shade800),
-                    ],
-                  ),
-                  onTap: () {
-                    _showSpinnerTimePicker(context);
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            _buildSectionTitle('Availability'),
-            Text(
-              isAvailable
-                  ? 'The shop is available at this time.'
-                  : 'The shop is not available at this time.',
-              style: GoogleFonts.roboto(
-                  fontSize: 16,
-                  color: isAvailable ? Colors.green : Colors.red,
-                  fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.deepPurple.shade400,
-                      Colors.deepPurple.shade800,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: [
-                    BoxShadow(
-                      // ignore: deprecated_member_use
-                      color: Colors.black.withOpacity(0.2),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                width: 300,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
-                    textStyle: GoogleFonts.roboto(fontSize: 16),
-                    backgroundColor: Colors.deepPurple.shade800,
-                    foregroundColor: Colors.deepPurple.shade800,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  onPressed: isAvailable &&
-                          selectedDate != null &&
-                          selectedTime != null &&
-                          !isLoading
-                      ? () async {
-                          await _bookAppointment();
-                        }
-                      : null,
-                  child: isLoading
-                      ? CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              const Color.fromARGB(255, 69, 39, 160)),
-                        )
-                      : Text('Book Now',
-                          style: GoogleFonts.roboto(color: Colors.white)),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.shopName,
+                        style: GoogleFonts.raleway(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple.shade800,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Address: ${widget.shopAddress}",
+                        style: GoogleFonts.raleway(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Mob No: ${widget.contactNumber}",
+                        style: GoogleFonts.montserrat(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Description: ${widget.description}",
+                        style: GoogleFonts.raleway(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          _buildSectionTitle('Available Services'),
+                          Spacer(),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ServicePage(services: services),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'View All',
+                              style: GoogleFonts.raleway(
+                                color: Colors.deepPurple.shade400,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      _buildServiceList(),
+                      Divider(),
+                      _buildSectionTitle('Available Employees'),
+                      _buildEmployeeList(),
+                      Divider(),
+                      SizedBox(height: 10),
+                      _buildSectionTitle('Booking Time'),
+                      Column(
+                        children: [
+                          ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.calendar_today,
+                                        color: Colors.deepPurple.shade800),
+                                    SizedBox(width: 8),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Text(
+                                        selectedDate != null
+                                            ? DateFormat.yMMMd()
+                                                .format(selectedDate!)
+                                            : 'Select Date',
+                                        style: GoogleFonts.montserrat(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Icon(Icons.arrow_forward_ios,
+                                    color: Colors.deepPurple.shade800),
+                              ],
+                            ),
+                            onTap: () => _selectDate(),
+                          ),
+                          ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.access_time,
+                                        color: Colors.deepPurple.shade800),
+                                    SizedBox(width: 8),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Text(
+                                        selectedTime != null
+                                            ? DateFormat.jm().format(DateTime(
+                                                2020,
+                                                1,
+                                                1,
+                                                selectedTime!.hour,
+                                                selectedTime!.minute,
+                                                00))
+                                            : 'Select Time',
+                                        style: GoogleFonts.montserrat(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Icon(Icons.arrow_forward_ios,
+                                    color: Colors.deepPurple.shade800),
+                              ],
+                            ),
+                            onTap: () {
+                              _showSpinnerTimePicker(context);
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      _buildSectionTitle('Availability'),
+                      Text(
+                        isAvailable
+                            ? 'The shop is available at this time.'
+                            : 'The shop is not available at this time.',
+                        style: GoogleFonts.raleway(
+                            fontSize: 16,
+                            color: isAvailable ? Colors.green : Colors.red,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 20),
+                      Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.deepPurple.shade400,
+                                Colors.deepPurple.shade800,
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          width: 300,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 50, vertical: 15),
+                              textStyle: GoogleFonts.raleway(fontSize: 16),
+                              backgroundColor: Colors.deepPurple.shade800,
+                              foregroundColor: Colors.deepPurple.shade800,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            onPressed: isAvailable &&
+                                    selectedDate != null &&
+                                    selectedTime != null &&
+                                    !isLoading
+                                ? () async {
+                                    await _bookAppointment();
+                                  }
+                                : null,
+                            child: isLoading
+                                ? CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        const Color.fromARGB(255, 69, 39, 160)),
+                                  )
+                                : Text('Book Now',
+                                    style: GoogleFonts.raleway(
+                                        color: Colors.white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              childCount: 1,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -692,7 +745,7 @@ class _BookingPageState extends State<BookingPage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         title,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.raleway(
             fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
       ),
     );
@@ -706,164 +759,115 @@ class _BookingPageState extends State<BookingPage> {
       physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 8.0,
-        childAspectRatio: 0.65,
+        crossAxisSpacing: 8.0, // Match the first code
+        mainAxisSpacing: 8.0, // Match the first code
+        childAspectRatio: 0.8, // Match the first code
       ),
       itemCount: limitedServices.length,
       itemBuilder: (context, index) {
         final service = limitedServices[index];
         Uint8List? imageBytes;
-
         // Decode the base64 image if available
         if (service['itemImage'] != null) {
           imageBytes = base64Decode(service['itemImage']);
         }
 
-        return Container(
-          padding: EdgeInsets.all(12.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
+        return GestureDetector(
+          onTap: () {
+            _showServiceDetails(
+                context, service); // Show service details on card tap
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Stack(
-            children: [
-              // Image Container
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: imageBytes != null
-                    ? Image.memory(
-                        imageBytes,
-                        height: 100,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      )
-                    : Container(
-                        height: 100,
-                        width: double.infinity,
-                        color: Colors.grey[400],
-                        child: Center(
-                          child:
-                              Icon(Icons.image, color: Colors.white, size: 50),
+              child: Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Align text to the left
+                children: [
+                  // Image Container
+                  ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(16)), // Match the first code
+                    child: imageBytes != null
+                        ? Image.memory(
+                            imageBytes,
+                            height: 100, // Match the first code
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          )
+                        : Center(
+                            child: Icon(Icons.image,
+                                color: Colors.white,
+                                size: 50), // Match the first code
+                          ),
+                  ),
+                  // Service Details
+                  Padding(
+                    padding: const EdgeInsets.all(8.0), // Padding for details
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment
+                          .start, // Ensure text is left-aligned
+                      children: [
+                        // Service Name
+                        Text(
+                          service['itemName'] ?? 'Unknown Item',
+                          style: GoogleFonts.raleway(
+                            color: Colors.black,
+                            fontSize: 14.0, // Match the first code
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-              ),
-              // Info Icon in Circular Container at the Top
-              Positioned(
-                right: 2,
-                top: 65, // Position the icon at the top
-                child: Container(
-                  width: 30, // Set a fixed width for the circular container
-                  height: 30, // Set a fixed height for the circular container
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black
-                        .withOpacity(0.5), // Background color for visibility
-                  ),
-                  child: Center(
-                    // Center the icon within the container
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.info,
-                        color: Colors.white,
-                        size: 16, // Size of the icon
-                      ),
-                      onPressed: () {
-                        _showServiceDetails(context, service);
-                      },
-                      padding: EdgeInsets.zero, // Remove default padding
-                    ),
-                  ),
-                ),
-              ),
-              // Service Details
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom:
-                    50, // Adjust this value to position the text above the button
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Service Name
-                    Text(
-                      service['itemName'] ?? 'Unknown Item',
-                      style: GoogleFonts.roboto(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 4.0), // Space between name and price
+                        SizedBox(height: 4.0), // Match the first code
 
-                    // Price
-                    Text(
-                      '\$${service['price'] ?? 'N/A'}',
-                      style: GoogleFonts.roboto(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(
-                        height: 4.0), // Space between price and availability
+                        // Price
+                        Text(
+                          '\$${service['price'] ?? 'N/A'}',
+                          style: GoogleFonts.montserrat(
+                            color: Colors.black,
+                            fontSize: 12.0, // Match the first code
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 4.0), // Match the first code
 
-                    // Availability
-                    Text(
-                      'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
-                      style: GoogleFonts.roboto(
-                        color: Colors.black,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(
-                        height:
-                            4.0), // Space between availability and service time
+                        // Availability
+                        Text(
+                          'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
+                          style: GoogleFonts.raleway(
+                            color: Colors.black,
+                            fontSize: 11.0, // Match the first code
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 4.0), // Match the first code
 
-                    // Service Time
-                    Text(
-                      'Service Time: ${service['serviceTime'] ?? 'N/A'}',
-                      style: GoogleFonts.roboto(
-                        color: Colors.black,
-                        fontSize: 12.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Add to Cart Button
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 3, // Position the button at the bottom
-                child: ElevatedButton(
-                  onPressed: () {
-                    addToCart(context, service);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                  ),
-                  child: Text(
-                    'Add to Cart',
-                    style: GoogleFonts.roboto(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
+                        // Service Time
+                        Text(
+                          'Service Time: ${service['serviceTime'] ?? 'N/A'}',
+                          style: GoogleFonts.montserrat(
+                            color: Colors.black,
+                            fontSize: 11.0, // Match the first code
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         );
       },
@@ -933,16 +937,16 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                   SizedBox(height: 8.0),
                   Text('ID: ${employee['id']}',
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.montserrat(
                           color: Colors.black, fontSize: 14.0)),
                   Text(employee['employeeName'],
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.raleway(
                           color: Colors.black,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold)),
                   Text(
                     employee['isAvailable'] ? 'Available' : 'Not Available',
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.raleway(
                       color:
                           employee['isAvailable'] ? Colors.green : Colors.red,
                       fontWeight: FontWeight.bold,
@@ -959,28 +963,29 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
-  void _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2101),
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor: Colors.deepPurple.shade800, // Primary color
-            hintColor: Colors.deepPurple.shade800,
-            colorScheme: ColorScheme.light(primary: Colors.deepPurple.shade800),
-            dialogBackgroundColor: Colors.white, // Background color to white
+  void _selectDate() async {
+    List<DateTime?> picked = await showCalendarDatePicker2Dialog(
+          context: context,
+          config: CalendarDatePicker2WithActionButtonsConfig(
+            calendarType:
+                CalendarDatePicker2Type.single, // Single date selection
+            selectedDayHighlightColor: Colors.deepPurple.shade800,
+            firstDate: DateTime.now(),
+            dayTextStyle:
+                TextStyle(color: Colors.black), // Change text color to black
+            selectedDayTextStyle: TextStyle(
+                color:
+                    Colors.white), // Change selected day text color if needed
           ),
-          child: child!,
-        );
-      },
-    );
+          dialogBackgroundColor: Colors.white,
+          value: [selectedDate],
+          dialogSize: Size(350, 350),
+        ) ??
+        [];
 
-    if (picked != null && picked != selectedDate) {
+    if (picked.isNotEmpty && picked.first != null) {
       setState(() {
-        selectedDate = picked;
+        selectedDate = picked.first!;
       });
     }
   }
@@ -993,8 +998,8 @@ class _BookingPageState extends State<BookingPage> {
           backgroundColor: Colors.white, // Set background color to white
           title: Text(
             'Select Time',
-            style:
-                GoogleFonts.roboto(fontSize: 20, fontWeight: FontWeight.bold),
+            style: GoogleFonts.montserrat(
+                fontSize: 20, fontWeight: FontWeight.bold),
           ),
           content: SizedBox(
             height: 200,
@@ -1018,11 +1023,11 @@ class _BookingPageState extends State<BookingPage> {
                 // Time Picker
                 TimePickerSpinner(
                   is24HourMode: false,
-                  normalTextStyle: GoogleFonts.roboto(
+                  normalTextStyle: GoogleFonts.montserrat(
                     fontSize: 18,
                     color: Colors.grey.shade600, // Unselected text dimmed
                   ),
-                  highlightedTextStyle: GoogleFonts.roboto(
+                  highlightedTextStyle: GoogleFonts.montserrat(
                     fontSize: 24, // Larger font for selected time
                     fontWeight: FontWeight.bold,
                     color:
@@ -1047,7 +1052,7 @@ class _BookingPageState extends State<BookingPage> {
               },
               child: Text(
                 'Done',
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.raleway(
                     fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),

@@ -18,7 +18,7 @@ class CartPage extends StatelessWidget {
         backgroundColor: Colors.white,
         title: Text(
           "My Cart",
-          style: GoogleFonts.roboto(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.raleway(color: Colors.deepPurple.shade800),
         ),
         leading: IconButton(
           icon: SvgPicture.asset(
@@ -44,7 +44,7 @@ class CartPage extends StatelessWidget {
               ? Center(
                   child: Text(
                     "Your cart is empty  !",
-                    style: GoogleFonts.roboto(fontSize: 17),
+                    style: GoogleFonts.raleway(fontSize: 17),
                   ),
                 )
               : ListView.builder(
@@ -84,12 +84,12 @@ class CartPage extends StatelessWidget {
                           title: Text(
                             item['title'] ?? '',
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.roboto(),
+                            style: GoogleFonts.raleway(),
                           ),
                           subtitle: Text(
                             '\$${(double.tryParse(item['price'] ?? '0.0') ?? 0.0).toStringAsFixed(2)}',
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.roboto(),
+                            style: GoogleFonts.montserrat(),
                           ),
                           trailing: IconButton(
                             icon: Icon(Icons.delete, color: Colors.black),
@@ -117,11 +117,11 @@ class CartPage extends StatelessWidget {
           title: Text(
             "Confirm Deletion",
             style:
-                GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.bold),
+                GoogleFonts.raleway(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           content: Text(
             "Are you sure you want to delete this item from your cart?",
-            style: GoogleFonts.roboto(),
+            style: GoogleFonts.raleway(),
           ),
           actions: [
             TextButton(
@@ -130,7 +130,7 @@ class CartPage extends StatelessWidget {
               },
               child: Text(
                 "Cancel",
-                style: GoogleFonts.roboto(),
+                style: GoogleFonts.raleway(),
               ),
             ),
             TextButton(
@@ -140,7 +140,7 @@ class CartPage extends StatelessWidget {
                 Navigator.of(context).pop();
               },
               child:
-                  Text("Delete", style: GoogleFonts.roboto(color: Colors.red)),
+                  Text("Delete", style: GoogleFonts.raleway(color: Colors.red)),
             ),
           ],
         );

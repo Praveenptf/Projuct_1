@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> _fetchNearbyParlours(double latitude, double longitude) async {
     final url = Uri.parse(
-        "http://192.168.1.16:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
+        "http://192.168.1.200:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
 
     try {
       final response = await http.get(url);
@@ -206,7 +206,7 @@ class _HomePageState extends State<HomePage>
                       children: [
                         Text(
                           "Salon Info",
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.raleway(
                             fontSize: 23,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -274,7 +274,7 @@ class _HomePageState extends State<HomePage>
                         decoration: InputDecoration(
                           hintText: 'Search...',
                           hintStyle:
-                              GoogleFonts.roboto(color: Colors.grey.shade400),
+                              GoogleFonts.raleway(color: Colors.grey.shade400),
                           prefixIcon: Icon(
                             Icons.search,
                             color: Colors.deepPurple.shade300,
@@ -347,7 +347,7 @@ class _HomePageState extends State<HomePage>
                       children: [
                         Text(
                           'Welcome to Salon Info',
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.raleway(
                             fontSize: 19,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -355,8 +355,8 @@ class _HomePageState extends State<HomePage>
                         ),
                         SizedBox(height: 8),
                         Text(
-                          'Explore Our Services and Book your Appointment Easily',
-                          style: GoogleFonts.roboto(
+                          'Explore Our Services and Book your Appointment Easily...',
+                          style: GoogleFonts.raleway(
                             fontSize: 13,
                             color: Colors.grey.shade600,
                           ),
@@ -371,7 +371,7 @@ class _HomePageState extends State<HomePage>
                       children: [
                         Text(
                           'Nearby Services',
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.raleway(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -391,7 +391,7 @@ class _HomePageState extends State<HomePage>
                           },
                           child: Text(
                             'View All',
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.raleway(
                               color: Colors.deepPurple.shade400,
                               fontWeight: FontWeight.w600,
                             ),
@@ -534,7 +534,7 @@ class _HomePageState extends State<HomePage>
                                             Text(
                                               parlour['parlourName'] ??
                                                   'Unknown Parlour',
-                                              style: GoogleFonts.roboto(
+                                              style: GoogleFonts.raleway(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
                                                 color:
@@ -547,7 +547,7 @@ class _HomePageState extends State<HomePage>
                                             Text(
                                               parlour['location'] ??
                                                   'No Location Available',
-                                              style: GoogleFonts.roboto(
+                                              style: GoogleFonts.raleway(
                                                 fontSize: 12,
                                                 color: Colors.grey.shade600,
                                               ),
@@ -567,7 +567,7 @@ class _HomePageState extends State<HomePage>
                                                   parlour['ratings']
                                                           ?.toString() ??
                                                       'No Ratings',
-                                                  style: GoogleFonts.roboto(
+                                                  style: GoogleFonts.montserrat(
                                                     fontSize: 12,
                                                     color: Colors.grey.shade600,
                                                   ),
@@ -623,11 +623,11 @@ class _HomePageState extends State<HomePage>
           selectedItemColor: Colors.white,
           // ignore: deprecated_member_use
           unselectedItemColor: Colors.white.withOpacity(0.6),
-          selectedLabelStyle: GoogleFonts.roboto(
+          selectedLabelStyle: GoogleFonts.raleway(
             fontWeight: FontWeight.bold,
             fontSize: 14,
           ),
-          unselectedLabelStyle: GoogleFonts.roboto(
+          unselectedLabelStyle: GoogleFonts.raleway(
             fontWeight: FontWeight.normal,
             fontSize: 12,
           ),

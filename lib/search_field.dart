@@ -67,7 +67,7 @@ class _SearchPageState extends State<SearchPage> {
                     decoration: InputDecoration(
                       hintText: 'Search...',
                       hintStyle:
-                          GoogleFonts.roboto(color: Colors.grey.shade400),
+                          GoogleFonts.raleway(color: Colors.grey.shade400),
                       prefixIcon: Icon(
                         Icons.search,
                         color: Colors.deepPurple.shade300,
@@ -92,7 +92,7 @@ class _SearchPageState extends State<SearchPage> {
                       filled: true,
                       fillColor: Colors.white,
                     ),
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.raleway(
                         color: Colors.black), // Change text color
                   ),
                 ),
@@ -120,11 +120,11 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                     title: Text(
                       parlour['parlourName'] ?? 'Unknown',
-                      style: GoogleFonts.roboto(),
+                      style: GoogleFonts.raleway(),
                     ),
                     subtitle: Text(
                       parlour['location'] ?? 'No Location',
-                      style: GoogleFonts.roboto(),
+                      style: GoogleFonts.raleway(),
                     ),
                     onTap: () {
                       // Navigate to BookingPage or any other page
