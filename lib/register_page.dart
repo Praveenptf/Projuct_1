@@ -205,7 +205,7 @@ class _RegisterPageState extends State<RegisterPage>
                         const SizedBox(height: 32),
                         Text(
                           'Create Account',
-                          style: GoogleFonts.raleway(
+                          style: GoogleFonts.lato(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -215,7 +215,7 @@ class _RegisterPageState extends State<RegisterPage>
                         const SizedBox(height: 8),
                         Text(
                           'Sign up to get started',
-                          style: GoogleFonts.raleway(
+                          style: GoogleFonts.lato(
                             fontSize: 16,
                             color: Colors.grey.shade600,
                           ),
@@ -227,7 +227,7 @@ class _RegisterPageState extends State<RegisterPage>
                           controller: _nameController,
                           decoration: InputDecoration(
                             hintText: 'Full Name',
-                            hintStyle: GoogleFonts.raleway(),
+                            hintStyle: GoogleFonts.lato(),
                             prefixIcon: Icon(
                               Icons.person_outline,
                               color: Colors.deepPurple.shade300,
@@ -251,7 +251,7 @@ class _RegisterPageState extends State<RegisterPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _nameErrorMessage!,
-                              style: GoogleFonts.raleway(
+                              style: GoogleFonts.lato(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -263,7 +263,7 @@ class _RegisterPageState extends State<RegisterPage>
                           controller: _mobileNumber,
                           decoration: InputDecoration(
                             hintText: 'Mobile Number',
-                            hintStyle: GoogleFonts.raleway(),
+                            hintStyle: GoogleFonts.lato(),
                             prefixIcon: Icon(
                               Icons.phone,
                               color: Colors.deepPurple.shade300,
@@ -290,7 +290,7 @@ class _RegisterPageState extends State<RegisterPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _mobileErrorMessage!,
-                              style: GoogleFonts.raleway(
+                              style: GoogleFonts.lato(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -330,7 +330,7 @@ class _RegisterPageState extends State<RegisterPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _emailErrorMessage!,
-                              style: GoogleFonts.raleway(
+                              style: GoogleFonts.lato(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -343,7 +343,7 @@ class _RegisterPageState extends State<RegisterPage>
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             hintText: 'Password',
-                            hintStyle: GoogleFonts.raleway(),
+                            hintStyle: GoogleFonts.lato(),
                             prefixIcon: Icon(
                               Icons.lock_outline,
                               color: Colors.deepPurple.shade300,
@@ -382,7 +382,7 @@ class _RegisterPageState extends State<RegisterPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _passwordErrorMessage!,
-                              style: GoogleFonts.raleway(
+                              style: GoogleFonts.lato(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -395,7 +395,7 @@ class _RegisterPageState extends State<RegisterPage>
                           obscureText: !_isConfirmPasswordVisible,
                           decoration: InputDecoration(
                             hintText: 'Confirm Password',
-                            hintStyle: GoogleFonts.raleway(),
+                            hintStyle: GoogleFonts.lato(),
                             prefixIcon: Icon(
                               Icons.lock_outline,
                               color: Colors.deepPurple.shade300,
@@ -435,7 +435,7 @@ class _RegisterPageState extends State<RegisterPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _confirmPasswordErrorMessage!,
-                              style: GoogleFonts.raleway(
+                              style: GoogleFonts.lato(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -470,7 +470,7 @@ class _RegisterPageState extends State<RegisterPage>
                               child: Center(
                                 child: Text(
                                   'Sign Up',
-                                  style: GoogleFonts.raleway(
+                                  style: GoogleFonts.lato(
                                     color: Colors.white,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
@@ -487,7 +487,7 @@ class _RegisterPageState extends State<RegisterPage>
                           children: [
                             Text(
                               'Already have an account? ',
-                              style: GoogleFonts.raleway(
+                              style: GoogleFonts.lato(
                                 color: Colors.grey.shade600,
                               ),
                             ),
@@ -499,8 +499,8 @@ class _RegisterPageState extends State<RegisterPage>
                                         builder: (context) => LoginPage()));
                               },
                               child: Text(
-                                'Login',
-                                style: GoogleFonts.raleway(
+                                'Log in',
+                                style: GoogleFonts.lato(
                                   color: Colors.deepPurple.shade400,
                                   fontWeight: FontWeight.w600,
                                 ),

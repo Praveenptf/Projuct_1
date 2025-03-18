@@ -78,7 +78,7 @@ class _FrontPage1State extends State<FrontPage1> {
                         child: Center(
                           child: Text(
                             'Log In',
-                            style: GoogleFonts.raleway(
+                            style: GoogleFonts.lato(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -124,7 +124,7 @@ class _FrontPage1State extends State<FrontPage1> {
                   child: Center(
                     child: Text(
                       'Sign Up',
-                      style: GoogleFonts.raleway(
+                      style: GoogleFonts.lato(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -233,7 +233,7 @@ class _OnboardingCardState extends State<OnboardingCard>
           const SizedBox(height: 20),
           Text(
             widget.onboarding.title,
-            style: GoogleFonts.raleway(
+            style: GoogleFonts.lato(
                 fontSize: 31,
                 fontWeight: FontWeight.bold,
                 color: Colors.deepPurple.shade800),
@@ -242,7 +242,7 @@ class _OnboardingCardState extends State<OnboardingCard>
           const SizedBox(height: 12),
           Text(
             widget.onboarding.description,
-            style: GoogleFonts.raleway(
+            style: GoogleFonts.lato(
               fontSize: 14,
               fontWeight: FontWeight.w500,
               color: Colors.black,

@@ -66,8 +66,7 @@ class _SearchPageState extends State<SearchPage> {
                     onChanged: _filterParlours,
                     decoration: InputDecoration(
                       hintText: 'Search...',
-                      hintStyle:
-                          GoogleFonts.raleway(color: Colors.grey.shade400),
+                      hintStyle: GoogleFonts.lato(color: Colors.grey.shade400),
                       prefixIcon: Icon(
                         Icons.search,
                         color: Colors.deepPurple.shade300,
@@ -92,7 +91,7 @@ class _SearchPageState extends State<SearchPage> {
                       filled: true,
                       fillColor: Colors.white,
                     ),
-                    style: GoogleFonts.raleway(
+                    style: GoogleFonts.lato(
                         color: Colors.black), // Change text color
                   ),
                 ),
@@ -120,11 +119,11 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                     title: Text(
                       parlour['parlourName'] ?? 'Unknown',
-                      style: GoogleFonts.raleway(),
+                      style: GoogleFonts.lato(),
                     ),
                     subtitle: Text(
                       parlour['location'] ?? 'No Location',
-                      style: GoogleFonts.raleway(),
+                      style: GoogleFonts.lato(),
                     ),
                     onTap: () {
                       // Navigate to BookingPage or any other page

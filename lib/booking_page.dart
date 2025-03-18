@@ -65,7 +65,7 @@ class _BookingPageState extends State<BookingPage> {
       SnackBar(
         content: Text(
           '${service['itemName']} added to cart!',
-          style: GoogleFonts.montserrat(),
+          style: GoogleFonts.roboto(),
         ),
         duration: Duration(seconds: 2),
       ),
@@ -317,7 +317,7 @@ class _BookingPageState extends State<BookingPage> {
                     // Service Details
                     Text(
                       service['itemName'] ?? 'Unknown Item',
-                      style: GoogleFonts.montserrat(
+                      style: GoogleFonts.lato(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
@@ -326,8 +326,8 @@ class _BookingPageState extends State<BookingPage> {
                     SizedBox(height: 8.0),
                     Text(
                       service['description'] ?? 'No description available',
-                      style: GoogleFonts.montserrat(
-                          fontSize: 16, color: Colors.black54),
+                      style:
+                          GoogleFonts.lato(fontSize: 16, color: Colors.black54),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 12.0),
@@ -369,7 +369,7 @@ class _BookingPageState extends State<BookingPage> {
                       ),
                       child: Text(
                         'Add to Cart',
-                        style: GoogleFonts.montserrat(
+                        style: GoogleFonts.lato(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -410,7 +410,7 @@ class _BookingPageState extends State<BookingPage> {
   Widget _buildDetailText(String label, String value) {
     return RichText(
       text: TextSpan(
-        style: GoogleFonts.montserrat(fontSize: 16, color: Colors.black),
+        style: GoogleFonts.lato(fontSize: 16, color: Colors.black),
         children: [
           TextSpan(
               text: '$label ', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -507,7 +507,7 @@ class _BookingPageState extends State<BookingPage> {
                                 ),
                                 child: Text(
                                   '${cart.cartItems.length}',
-                                  style: GoogleFonts.montserrat(
+                                  style: GoogleFonts.lato(
                                     color: Colors.white,
                                     fontSize: 12,
                                   ),
@@ -533,7 +533,7 @@ class _BookingPageState extends State<BookingPage> {
                     children: [
                       Text(
                         widget.shopName,
-                        style: GoogleFonts.raleway(
+                        style: GoogleFonts.lato(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                           color: Colors.deepPurple.shade800,
@@ -542,7 +542,7 @@ class _BookingPageState extends State<BookingPage> {
                       SizedBox(height: 5),
                       Text(
                         "Address: ${widget.shopAddress}",
-                        style: GoogleFonts.raleway(
+                        style: GoogleFonts.lato(
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
                         ),
@@ -550,7 +550,7 @@ class _BookingPageState extends State<BookingPage> {
                       SizedBox(height: 8),
                       Text(
                         "Mob No: ${widget.contactNumber}",
-                        style: GoogleFonts.montserrat(
+                        style: GoogleFonts.lato(
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
                         ),
@@ -558,7 +558,7 @@ class _BookingPageState extends State<BookingPage> {
                       SizedBox(height: 5),
                       Text(
                         "Description: ${widget.description}",
-                        style: GoogleFonts.raleway(
+                        style: GoogleFonts.lato(
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
                         ),
@@ -580,7 +580,7 @@ class _BookingPageState extends State<BookingPage> {
                             },
                             child: Text(
                               'View All',
-                              style: GoogleFonts.raleway(
+                              style: GoogleFonts.lato(
                                 color: Colors.deepPurple.shade400,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -614,7 +614,7 @@ class _BookingPageState extends State<BookingPage> {
                                             ? DateFormat.yMMMd()
                                                 .format(selectedDate!)
                                             : 'Select Date',
-                                        style: GoogleFonts.montserrat(
+                                        style: GoogleFonts.lato(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -649,7 +649,7 @@ class _BookingPageState extends State<BookingPage> {
                                                 selectedTime!.minute,
                                                 00))
                                             : 'Select Time',
-                                        style: GoogleFonts.montserrat(
+                                        style: GoogleFonts.lato(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -672,7 +672,7 @@ class _BookingPageState extends State<BookingPage> {
                         isAvailable
                             ? 'The shop is available at this time.'
                             : 'The shop is not available at this time.',
-                        style: GoogleFonts.raleway(
+                        style: GoogleFonts.lato(
                             fontSize: 16,
                             color: isAvailable ? Colors.green : Colors.red,
                             fontWeight: FontWeight.bold),
@@ -702,7 +702,7 @@ class _BookingPageState extends State<BookingPage> {
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 50, vertical: 15),
-                              textStyle: GoogleFonts.raleway(fontSize: 16),
+                              textStyle: GoogleFonts.lato(fontSize: 16),
                               backgroundColor: Colors.deepPurple.shade800,
                               foregroundColor: Colors.deepPurple.shade800,
                               shape: RoundedRectangleBorder(
@@ -723,8 +723,8 @@ class _BookingPageState extends State<BookingPage> {
                                         const Color.fromARGB(255, 69, 39, 160)),
                                   )
                                 : Text('Book Now',
-                                    style: GoogleFonts.raleway(
-                                        color: Colors.white)),
+                                    style:
+                                        GoogleFonts.lato(color: Colors.white)),
                           ),
                         ),
                       ),
@@ -745,7 +745,7 @@ class _BookingPageState extends State<BookingPage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         title,
-        style: GoogleFonts.raleway(
+        style: GoogleFonts.lato(
             fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
       ),
     );
@@ -822,7 +822,7 @@ class _BookingPageState extends State<BookingPage> {
                         // Service Name
                         Text(
                           service['itemName'] ?? 'Unknown Item',
-                          style: GoogleFonts.raleway(
+                          style: GoogleFonts.lato(
                             color: Colors.black,
                             fontSize: 14.0, // Match the first code
                             fontWeight: FontWeight.bold,
@@ -835,7 +835,7 @@ class _BookingPageState extends State<BookingPage> {
                         // Price
                         Text(
                           '\$${service['price'] ?? 'N/A'}',
-                          style: GoogleFonts.montserrat(
+                          style: GoogleFonts.lato(
                             color: Colors.black,
                             fontSize: 12.0, // Match the first code
                             fontWeight: FontWeight.w600,
@@ -846,7 +846,7 @@ class _BookingPageState extends State<BookingPage> {
                         // Availability
                         Text(
                           'Available: ${service['availability'] == true ? 'Yes' : 'No'}',
-                          style: GoogleFonts.raleway(
+                          style: GoogleFonts.lato(
                             color: Colors.black,
                             fontSize: 11.0, // Match the first code
                             fontWeight: FontWeight.w500,
@@ -857,7 +857,7 @@ class _BookingPageState extends State<BookingPage> {
                         // Service Time
                         Text(
                           'Service Time: ${service['serviceTime'] ?? 'N/A'}',
-                          style: GoogleFonts.montserrat(
+                          style: GoogleFonts.lato(
                             color: Colors.black,
                             fontSize: 11.0, // Match the first code
                           ),
@@ -937,7 +937,7 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                   SizedBox(height: 8.0),
                   Text('ID: ${employee['id']}',
-                      style: GoogleFonts.montserrat(
+                      style: GoogleFonts.lato(
                           color: Colors.black, fontSize: 14.0)),
                   Text(employee['employeeName'],
                       style: GoogleFonts.raleway(
@@ -946,7 +946,7 @@ class _BookingPageState extends State<BookingPage> {
                           fontWeight: FontWeight.bold)),
                   Text(
                     employee['isAvailable'] ? 'Available' : 'Not Available',
-                    style: GoogleFonts.raleway(
+                    style: GoogleFonts.lato(
                       color:
                           employee['isAvailable'] ? Colors.green : Colors.red,
                       fontWeight: FontWeight.bold,
@@ -998,8 +998,7 @@ class _BookingPageState extends State<BookingPage> {
           backgroundColor: Colors.white, // Set background color to white
           title: Text(
             'Select Time',
-            style: GoogleFonts.montserrat(
-                fontSize: 20, fontWeight: FontWeight.bold),
+            style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           content: SizedBox(
             height: 200,
@@ -1023,11 +1022,11 @@ class _BookingPageState extends State<BookingPage> {
                 // Time Picker
                 TimePickerSpinner(
                   is24HourMode: false,
-                  normalTextStyle: GoogleFonts.montserrat(
+                  normalTextStyle: GoogleFonts.lato(
                     fontSize: 18,
                     color: Colors.grey.shade600, // Unselected text dimmed
                   ),
-                  highlightedTextStyle: GoogleFonts.montserrat(
+                  highlightedTextStyle: GoogleFonts.lato(
                     fontSize: 24, // Larger font for selected time
                     fontWeight: FontWeight.bold,
                     color:
@@ -1052,8 +1051,8 @@ class _BookingPageState extends State<BookingPage> {
               },
               child: Text(
                 'Done',
-                style: GoogleFonts.raleway(
-                    fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ],

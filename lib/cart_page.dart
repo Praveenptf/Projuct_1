@@ -18,7 +18,7 @@ class CartPage extends StatelessWidget {
         backgroundColor: Colors.white,
         title: Text(
           "My Cart",
-          style: GoogleFonts.raleway(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.lato(color: Colors.deepPurple.shade800),
         ),
         leading: IconButton(
           icon: SvgPicture.asset(
@@ -44,103 +44,190 @@ class CartPage extends StatelessWidget {
               ? Center(
                   child: Text(
                     "Your cart is empty  !",
-                    style: GoogleFonts.raleway(fontSize: 17),
+                    style: GoogleFonts.lato(fontSize: 17),
                   ),
                 )
-              : ListView.builder(
-                  itemCount: cartItems.length,
-                  itemBuilder: (context, index) {
-                    final item = cartItems[index];
-                    Uint8List? imageBytes;
+              : Padding(
+                  padding: const EdgeInsets.only(
+                      top: 16.0), // Adjust the value as needed
+                  child: ListView.builder(
+                    itemCount: cartItems.length,
+                    itemBuilder: (context, index) {
+                      final item = cartItems[index];
+                      Uint8List? imageBytes;
 
-                    if (item['itemImage'] != null) {
-                      imageBytes = base64Decode(item['itemImage']!);
-                    }
+                      if (item['itemImage'] != null) {
+                        imageBytes = base64Decode(item['itemImage']!);
+                      }
 
-                    return Column(
-                      children: [
-                        ListTile(
-                          leading: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: imageBytes != null
-                                ? Image.memory(
-                                    imageBytes,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        color: Colors.grey,
-                                        child: Icon(Icons.error,
-                                            color: Colors.white),
-                                      );
-                                    },
-                                  )
-                                : Container(
-                                    color: Colors.grey,
-                                    child:
-                                        Icon(Icons.image, color: Colors.white),
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 100,
+                              margin: const EdgeInsets.only(bottom: 15),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(18),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 6),
                                   ),
+                                ],
+                              ),
+                              child: ListTile(
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      12), // Adjust the radius as needed
+                                  child: imageBytes != null
+                                      ? Image.memory(
+                                          imageBytes,
+                                          fit: BoxFit.cover,
+                                          width:
+                                              70, // Increased width for the image
+                                          height:
+                                              70, // Increased height for the image
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        12), // Match the radius
+                                                color: Colors.grey,
+                                              ),
+                                              width:
+                                                  70, // Increased width for the placeholder
+                                              height:
+                                                  100, // Increased height for the placeholder
+                                              child: Icon(Icons.error,
+                                                  color: Colors.white),
+                                            );
+                                          },
+                                        )
+                                      : Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                12), // Match the radius
+                                            color: Colors.grey,
+                                          ),
+                                          width:
+                                              70, // Increased width for the placeholder
+                                          height:
+                                              100, // Increased height for the placeholder
+                                          child: Icon(Icons.image,
+                                              color: Colors.white),
+                                        ),
+                                ),
+                                title: Text(
+                                  item['title'] ?? '',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.lato(),
+                                ),
+                                subtitle: Padding(
+                                  padding: const EdgeInsets.only(right: 110),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: Colors.deepPurple.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      '\$${(double.tryParse(item['price'] ?? '0.0') ?? 0.0).toStringAsFixed(2)}',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.lato(
+                                        color: const Color.fromARGB(
+                                            255, 101, 206, 93),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                trailing: Container(
+                                  height: 36,
+                                  width: 36,
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    icon: Icon(
+                                      Icons.delete_outline_rounded,
+                                      color: Colors.red,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      _showDeleteConfirmationDialog(
+                                          context, index);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                          title: Text(
-                            item['title'] ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.raleway(),
-                          ),
-                          subtitle: Text(
-                            '\$${(double.tryParse(item['price'] ?? '0.0') ?? 0.0).toStringAsFixed(2)}',
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.montserrat(),
-                          ),
-                          trailing: IconButton(
-                            icon: Icon(Icons.delete, color: Colors.black),
-                            onPressed: () {
-                              _showDeleteConfirmationDialog(context, index);
-                            },
-                          ),
-                        ),
-                        if (index != cartItems.length - 1)
-                          Divider(thickness: 1, color: Colors.grey),
-                      ],
-                    );
-                  },
-                );
+                        ],
+                      );
+                    },
+                  ));
         },
       ),
     );
   }
 
-  void _showDeleteConfirmationDialog(BuildContext context, int index) {
+  Future<void> _showDeleteConfirmationDialog(
+      BuildContext context, int index) async {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
-            "Confirm Deletion",
-            style:
-                GoogleFonts.raleway(fontSize: 16, fontWeight: FontWeight.bold),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
+          title: Text('Confirm Deletion',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black)),
           content: Text(
-            "Are you sure you want to delete this item from your cart?",
-            style: GoogleFonts.raleway(),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                "Cancel",
-                style: GoogleFonts.raleway(),
-              ),
+            'Are you sure you want to delete this from your Cart ?',
+            style: TextStyle(
+              color: Color(0xFF666666),
+              fontSize: 14,
             ),
+          ),
+          actions: <Widget>[
             TextButton(
+              child: Text('Cancel',
+                  style: TextStyle(
+                    color: Color(0xFF666666),
+                    fontWeight: FontWeight.w600,
+                  )),
               onPressed: () {
-                Provider.of<CartModel>(context, listen: false)
-                    .removeItem(index);
                 Navigator.of(context).pop();
               },
-              child:
-                  Text("Delete", style: GoogleFonts.raleway(color: Colors.red)),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TextButton(
+                child: Text('Delete',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    )),
+                onPressed: () {
+                  Provider.of<CartModel>(context, listen: false)
+                      .removeItem(index);
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
           ],
         );

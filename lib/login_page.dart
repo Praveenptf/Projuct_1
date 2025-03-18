@@ -161,7 +161,7 @@ class _LoginPageState extends State<LoginPage>
                         const SizedBox(height: 35),
                         Text(
                           'Welcome Back',
-                          style: GoogleFonts.raleway(
+                          style: GoogleFonts.lato(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
                             color: Colors.deepPurple.shade800,
@@ -170,8 +170,8 @@ class _LoginPageState extends State<LoginPage>
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Login to continue',
-                          style: GoogleFonts.raleway(
+                          'Log in to continue',
+                          style: GoogleFonts.lato(
                             fontSize: 16,
                             color: Colors.grey.shade600,
                           ),
@@ -195,7 +195,7 @@ class _LoginPageState extends State<LoginPage>
                             controller: _mobileNumber,
                             decoration: InputDecoration(
                               hintText: 'Mobile Number',
-                              hintStyle: GoogleFonts.raleway(),
+                              hintStyle: GoogleFonts.lato(),
                               prefixIcon: Icon(
                                 Icons.phone,
                                 color: Colors.deepPurple.shade300,
@@ -215,7 +215,7 @@ class _LoginPageState extends State<LoginPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _mobileErrorMessage!,
-                              style: GoogleFonts.raleway(
+                              style: GoogleFonts.lato(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -240,7 +240,7 @@ class _LoginPageState extends State<LoginPage>
                             obscureText: !_isPasswordVisible,
                             decoration: InputDecoration(
                               hintText: 'Password',
-                              hintStyle: GoogleFonts.raleway(),
+                              hintStyle: GoogleFonts.lato(),
                               prefixIcon: Icon(
                                 Icons.lock_outline,
                                 color: Colors.deepPurple.shade300,
@@ -272,7 +272,7 @@ class _LoginPageState extends State<LoginPage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               _passwordErrorMessage!,
-                              style: GoogleFonts.raleway(
+                              style: GoogleFonts.lato(
                                 color: Colors.red,
                                 fontSize: 12,
                               ),
@@ -291,7 +291,7 @@ class _LoginPageState extends State<LoginPage>
                             },
                             child: Text(
                               'Forgot Password?',
-                              style: GoogleFonts.raleway(
+                              style: GoogleFonts.lato(
                                 color: Colors.deepPurple.shade400,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -326,7 +326,7 @@ class _LoginPageState extends State<LoginPage>
                               child: Center(
                                 child: Text(
                                   'Log In',
-                                  style: GoogleFonts.raleway(
+                                  style: GoogleFonts.lato(
                                     color: Colors.white,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
@@ -342,7 +342,7 @@ class _LoginPageState extends State<LoginPage>
                           children: [
                             Text(
                               'Don\'t have an account? ',
-                              style: GoogleFonts.raleway(
+                              style: GoogleFonts.lato(
                                 color: Colors.grey.shade600,
                               ),
                             ),
@@ -355,7 +355,7 @@ class _LoginPageState extends State<LoginPage>
                               },
                               child: Text(
                                 'Sign Up',
-                                style: GoogleFonts.raleway(
+                                style: GoogleFonts.lato(
                                   color: Colors.deepPurple.shade400,
                                   fontWeight: FontWeight.w600,
                                 ),

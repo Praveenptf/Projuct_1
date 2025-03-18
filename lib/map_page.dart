@@ -132,7 +132,7 @@ class _MappageState extends State<Mappage> {
         backgroundColor: Colors.white,
         title: Text(
           "Search Nearby Parlours",
-          style: GoogleFonts.raleway(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.lato(color: Colors.deepPurple.shade800),
         ),
         leading: IconButton(
           icon: SvgPicture.asset(
@@ -171,7 +171,7 @@ class _MappageState extends State<Mappage> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Search Location',
-                  hintStyle: GoogleFonts.raleway(color: Colors.grey.shade400),
+                  hintStyle: GoogleFonts.lato(color: Colors.grey.shade400),
                   prefixIcon: Icon(
                     Icons.search,
                     color: Colors.deepPurple.shade300,

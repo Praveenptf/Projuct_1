@@ -23,7 +23,7 @@ class NotificationPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Notifications',
-          style: GoogleFonts.raleway(color: Colors.deepPurple.shade800),
+          style: GoogleFonts.lato(color: Colors.deepPurple.shade800),
         ),
         backgroundColor: Colors.white,
         leading: IconButton(

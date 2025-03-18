@@ -50,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           automaticallyImplyLeading: false,
           title: Text(
             'Profile',
-            style: GoogleFonts.raleway(color: Colors.deepPurple.shade800),
+            style: GoogleFonts.lato(color: Colors.deepPurple.shade800),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -138,7 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading:
                         Icon(Icons.person, color: Colors.deepPurple.shade800),
                     title: Text('Edit Profile',
-                        style: GoogleFonts.raleway(
+                        style: GoogleFonts.lato(
                             color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
@@ -153,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading:
                         Icon(Icons.history, color: Colors.deepPurple.shade800),
                     title: Text('Booking History',
-                        style: GoogleFonts.raleway(
+                        style: GoogleFonts.lato(
                             color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
@@ -165,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading: Icon(Icons.notifications,
                         color: Colors.deepPurple.shade800),
                     title: Text('Notifications',
-                        style: GoogleFonts.raleway(
+                        style: GoogleFonts.lato(
                             color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
@@ -186,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading:
                         Icon(Icons.logout, color: Colors.deepPurple.shade800),
                     title: Text('Logout',
-                        style: GoogleFonts.raleway(
+                        style: GoogleFonts.lato(
                             color: Colors.deepPurple.shade800)),
                     trailing: Icon(Icons.arrow_forward_ios,
                         color: Colors.deepPurple.shade800),
@@ -208,46 +208,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _logout(BuildContext context) {
+  void _logout(BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
-            'Logout',
-            style:
-                GoogleFonts.raleway(fontSize: 16, fontWeight: FontWeight.bold),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
-          content: Text('Are you sure you want to logout?',
-              style: GoogleFonts.raleway()),
+          title: Text('Logout',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black)),
+          content: Text(
+            'Are you sure you want to Logout ?',
+            style: TextStyle(
+              color: Color(0xFF666666),
+              fontSize: 14,
+            ),
+          ),
           actions: <Widget>[
             TextButton(
+              child: Text('Cancel',
+                  style: TextStyle(
+                    color: Color(0xFF666666),
+                    fontWeight: FontWeight.w600,
+                  )),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
-              child: Text(
-                'Cancel',
-                style: GoogleFonts.raleway(),
-              ),
             ),
-            TextButton(
-              onPressed: () {
-                TokenManager.deleteToken(); // Clear the token
-                Navigator.of(context).pop(); // Close the dialog
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(
-                    'Logged out successfully',
-                    style: GoogleFonts.raleway(),
-                  ),
-                ));
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                  (Route<dynamic> route) => false,
-                );
-              },
-              child: Text(
-                'Logout',
-                style: GoogleFonts.raleway(),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.deepPurple.shade800,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TextButton(
+                onPressed: () {
+                  TokenManager.deleteToken(); // Clear the token
+                  Navigator.of(context).pop(); // Close the dialog
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Logged out successfully',
+                      style: GoogleFonts.lato(),
+                    ),
+                  ));
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+                child: Text(
+                  'Logout',
+                  style: GoogleFonts.lato(color: Colors.white),
+                ),
               ),
             ),
           ],

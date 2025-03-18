@@ -15,7 +15,7 @@ class DoorToDoorServicePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Door to Door Service',
-          style: GoogleFonts.raleway(
+          style: GoogleFonts.lato(
             color: Colors.deepPurple.shade800,
           ),
         ),
