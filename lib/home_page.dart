@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:firrst_projuct/DoorToDoorService.dart';
 import 'package:firrst_projuct/booking_page.dart';
+import 'package:firrst_projuct/categories.dart';
 import 'package:firrst_projuct/image_carousel.dart';
 import 'package:firrst_projuct/map_page.dart';
 import 'package:firrst_projuct/parlourspage.dart';
@@ -102,7 +103,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> _fetchNearbyParlours(double latitude, double longitude) async {
     final url = Uri.parse(
-        "http://192.168.1.200:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
+        "http://192.168.1.20:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
 
     try {
       final response = await http.get(url);
@@ -340,30 +341,10 @@ class _HomePageState extends State<HomePage>
                       }
                     },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Welcome to Salon Info',
-                          style: GoogleFonts.lato(
-                            fontSize: 19,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.deepPurple.shade800,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Explore Our Services and Book your Appointment Easily...',
-                          style: GoogleFonts.lato(
-                            fontSize: 13,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  SizedBox(height: 16),
+                  // In your build method
+                  CategoriesSection(),
+                  SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Row(

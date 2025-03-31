@@ -107,7 +107,7 @@ class _BookingPageState extends State<BookingPage> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.200:8086/api/Items/itemByParlourId?parlourId=$shopId'),
+            'http://192.168.1.20:8086/api/Items/itemByParlourId?parlourId=$shopId'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': 'JSESSIONID=88A396C56F7380D4FE65D5FBACB52C14',
@@ -152,16 +152,11 @@ class _BookingPageState extends State<BookingPage> {
   List<Map<String, dynamic>> employees = [];
   Future<void> _fetchEmployees() async {
     try {
-      String? token = await TokenManager.getToken(); // Get the token
-      // ignore: avoid_print
-      print('Token: $token'); // Log the token for debugging
-
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.200:8086/api/employees/by-parlourId?parlourId=$shopId'), // Corrected URL
+            'http://192.168.1.20:8086/api/employees/by-parlourId?parlourId=$shopId'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token', // Include the token in the header
         },
       );
 
@@ -205,7 +200,7 @@ class _BookingPageState extends State<BookingPage> {
     List<Map<String, dynamic>> bookingData = [
       {
         "userId": 1, // Use the retrieved user ID here
-        "itemId": 1, // Replace with the actual item ID
+        "itemIds": 1, // Replace with the actual item ID
         "itemName": selectedServiceTitles.join(', '),
         "actualPrice": _calculateTotalAmount(),
         "parlourId": shopId,
@@ -220,7 +215,7 @@ class _BookingPageState extends State<BookingPage> {
     ];
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.200:8086/api/cart/add'),
+      Uri.parse('http://192.168.1.20:8086/bookings/book'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -540,28 +535,77 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                       ),
                       SizedBox(height: 5),
-                      Text(
-                        "Address: ${widget.shopAddress}",
-                        style: GoogleFonts.lato(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Mob No: ${widget.contactNumber}",
-                        style: GoogleFonts.lato(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        "Description: ${widget.description}",
-                        style: GoogleFonts.lato(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment
+                            .start, // Aligns children to the start
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .start, // Aligns items to the start
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                              SizedBox(
+                                  width:
+                                      8), // Horizontal spacing between icon and text
+                              Expanded(
+                                // Allows the text to take up remaining space
+                                child: Text(
+                                  widget.shopAddress,
+                                  style: GoogleFonts.lato(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8), // Vertical spacing between rows
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.phone,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  widget.contactNumber,
+                                  style: GoogleFonts.lato(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8), // Consistent vertical spacing
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.article_outlined,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  widget.description,
+                                  style: GoogleFonts.lato(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                       SizedBox(height: 20),
                       Row(

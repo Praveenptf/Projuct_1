@@ -244,10 +244,38 @@ class _MappageState extends State<Mappage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Nearby Parlours:",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  for (var parlour in _nearbyParlours)
-                    Text(parlour['parlourName']), // Display parlour names
+                  Center(
+                    child: Text("Nearby Parlours",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: Divider(),
+                  ),
+                  for (var i = 0; i < _nearbyParlours.length && i < 4; i += 2)
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween, // Aligns the columns
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _nearbyParlours[i]['parlourName'],
+                            textAlign: TextAlign
+                                .center, // Center the text in the column
+                          ),
+                        ),
+                        if (i + 1 <
+                            _nearbyParlours
+                                .length) // Check if there is a second parlour
+                          Expanded(
+                            child: Text(
+                              _nearbyParlours[i + 1]['parlourName'],
+                              textAlign: TextAlign
+                                  .center, // Center the text in the column
+                            ),
+                          ),
+                      ],
+                    ),
                 ],
               ),
             ),
@@ -352,7 +380,7 @@ class _MappageState extends State<Mappage> {
 
   Future<void> _fetchNearbyParlours(double latitude, double longitude) async {
     final url = Uri.parse(
-        "http://192.168.1.200:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
+        "http://192.168.1.20:8086/api/user/userLocation?latitude=$latitude&longitude=$longitude");
 
     try {
       final response = await http.get(url);

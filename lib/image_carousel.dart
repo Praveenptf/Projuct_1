@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'booking_page.dart'; // Import your BookingPage
 
 class ImageCarousel extends StatefulWidget {
   final Function(int) onImageTap; // Add a callback function
@@ -19,17 +20,19 @@ class ImageCarousel extends StatefulWidget {
 class _ImageCarousel extends State<ImageCarousel> {
   int activeIndex = 0;
   List<Offer> offerImages = []; // Change to List<Offer>
+  List<dynamic> allParlours = []; // To store all parlours
 
   @override
   void initState() {
     super.initState();
     fetchImages(); // Fetch images when the widget is initialized
+    fetchAllParlours(); // Fetch all parlours
   }
 
   Future<void> fetchImages() async {
     try {
       final response = await http
-          .get(Uri.parse('http://192.168.1.200:8086/api/offer/getAllOffers'));
+          .get(Uri.parse('http://192.168.1.20:8086/api/offer/getAllOffers'));
 
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
@@ -52,6 +55,24 @@ class _ImageCarousel extends State<ImageCarousel> {
     } catch (e) {
       print("Error fetching images: $e"); // Log the error
       await _loadFallbackImages();
+    }
+  }
+
+  Future<void> fetchAllParlours() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://192.168.1.20:8086/api/parlour/getAllParlours'),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          allParlours = json.decode(response.body); // Store all parlours
+        });
+      } else {
+        print("Failed to fetch parlours: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching parlours: $e");
     }
   }
 
@@ -90,8 +111,36 @@ class _ImageCarousel extends State<ImageCarousel> {
             itemBuilder: (context, index, realIndex) {
               return GestureDetector(
                 onTap: () {
-                  // Call the callback with the offer ID
-                  widget.onImageTap(offerImages[index].id);
+                  // Check if the offerId matches any parlourId
+                  final offerId = offerImages[index].id;
+                  final matchedParlour = allParlours.firstWhere(
+                    (parlour) => parlour['id'] == offerId,
+                    orElse: () => null,
+                  );
+
+                  if (matchedParlour != null) {
+                    // Navigate to BookingPage with the matched parlour details
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BookingPage(
+                          title: matchedParlour['parlourName'] ?? '',
+                          shopName: matchedParlour['parlourName'] ?? '',
+                          shopAddress: matchedParlour['location'] ??
+                              'No Address Available',
+                          contactNumber: matchedParlour['phoneNumber'] ??
+                              'No Contact Available',
+                          description: matchedParlour['description'] ??
+                              'No Description Available',
+                          id: matchedParlour['id'] ?? 0,
+                          imageUrl: matchedParlour['image'] ?? '',
+                          parlourDetails: matchedParlour,
+                        ),
+                      ),
+                    );
+                  } else {
+                    print("No matching parlour found for offerId: $offerId");
+                  }
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),

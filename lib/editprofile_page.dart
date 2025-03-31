@@ -34,7 +34,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<User> fetchUserDetails(int userId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.16:8086/api/parlour/id?id=1'),
+      Uri.parse('http://192.168.1.10:8086/api/parlour/id?id=1'),
       headers: {
         'Cookie': 'JSESSIONID=ACF91BC7C0410372B5E2DF5E978E186B',
         'Authorization': 'Bearer ',
